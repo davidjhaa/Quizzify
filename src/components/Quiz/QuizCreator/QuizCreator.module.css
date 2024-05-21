@@ -1,0 +1,85 @@
+.parent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+.quizCreator {
+  width: 40vw;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+
+.questionNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.qNumber{
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.questionCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  box-shadow: 0 0 10px rgba(43, 42, 42, 0.1);
+}
+
+.quizType{
+  width: 100%;
+  height: 30px;
+  margin-bottom: 16px;
+  padding-left: 8px;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(43, 42, 42, 0.3);
+}
+
+.question {
+  border: none;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.optionType{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.option{
+  width: 80%;
+  height: 30px;
+  margin-bottom: 10px;
+  padding-left: 8px;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(43, 42, 42, 0.3);
+}
+
+
+
+button {
+  margin-top: 10px;
+}

@@ -1,0 +1,88 @@
+.appContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #041325;
+  margin: 0;
+  padding: 0;
+}
+
+.quizContainer {
+    width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .heading{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: large;
+  }
+  
+  .question {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  
+  .options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .option {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  
+  .selectedOption {
+    background-color: rgb(89, 219, 115); 
+    border: none;
+    /* margin-bottom: 20px; */
+    border-radius: 5px;
+  }
+
+  .imageOption{
+    width: calc(100% - 5px);
+    height: 150px; 
+    object-fit: cover; 
+    border-radius: 5px;
+    margin: 5px; 
+    cursor: pointer;
+  }
+  
+  .selectedImageOption {
+    border: 2px solid rgb(89, 219, 115);
+  }
+
+  .textImageOption{
+    border-radius: 5px;
+    background-color: #E5E5E5;
+  }
+
+  .navigationButton {
+    margin-top: 20px;
+  }
+  
+  .nextButton {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
