@@ -15,6 +15,11 @@ const Sidebar = () => {
     dispatch(setComponent(buttonName));
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login')
+  }
+
   return (
     <div className={styles.sidebar}>
       <h1 className={styles.title}>QUIZZIE</h1>
@@ -44,7 +49,7 @@ const Sidebar = () => {
           Create Quiz
         </button>
       </div>
-      <button className={styles.logout} onClick={() => localStorage.clear()}>LOGOUT</button>
+      <button className={styles.logout} onClick={handleLogout}>LOGOUT</button>
     </div>
   );
 };

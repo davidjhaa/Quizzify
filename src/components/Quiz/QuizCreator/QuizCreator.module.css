@@ -21,14 +21,27 @@
   align-items: center;
 }
 
-.qNumber{
+.questionNumber{
   display: flex;
   align-items: center;
   margin-bottom: 10px;
   gap: 8px;
 }
 
+.questionItem {
+  position: relative; /* Ensure the close button position is relative to the questionItem */
+}
+
+.closeButton {
+  position: absolute;
+  top: -15px; /* Adjust the distance from the top of the question circle */
+  right: -15px; /* Adjust the distance from the right of the question circle */
+  cursor: pointer;
+  color: red; /* Adjust color as needed */
+}
+
 .questionCircle {
+  position: relative;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -38,6 +51,15 @@
   justify-content: center;
   margin-right: 5px;
   box-shadow: 0 0 10px rgba(43, 42, 42, 0.1);
+  cursor: pointer;
+}
+
+.closeButton {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .quizType{
@@ -58,8 +80,23 @@
 
 .optionType{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  /* align-items: center;  */
   margin-bottom: 16px;
+}
+
+.radioButtons{
+  display: flex;
+  gap: 20px;
+}
+
+.radioButtons div {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+input[type="radio"] {
+  margin-right: 5px; /* Adjust the spacing between radio button and label */
 }
 
 .options {
@@ -69,7 +106,7 @@
 }
 
 .option{
-  width: 80%;
+  width: 50%;
   height: 30px;
   margin-bottom: 10px;
   padding-left: 8px;
@@ -78,8 +115,62 @@
   box-shadow: 0 0 10px rgba(43, 42, 42, 0.3);
 }
 
+.deleteIcon{
+  width: 20px;
+  margin-left: 14px;
+  cursor: pointer;
+}
 
+.addOption{
+  width: 50%;
+  height: 30px;
+  margin-bottom: 10px;
+  padding-left: 8px;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(43, 42, 42, 0.3);
+  cursor: pointer;
+}
 
 button {
   margin-top: 10px;
+}
+
+.createButton {
+  width: 180px; 
+  height: 34px;
+  padding: 10px 10px; 
+  background-color: #44d86e; 
+  border: none;
+  border-radius: 5px; 
+  color: #fff; 
+  font-size: 16px; 
+  cursor: pointer;
+  text-align: center; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+}
+
+
+.cancelButton{
+  width: 180px; 
+  height: 34px;
+  padding: 10px 10px; 
+  background-color: white; 
+  border: none;
+  border-radius: 5px; 
+  color: black; 
+  font-size: 16px; 
+  cursor: pointer;
+  text-align: center; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  box-shadow: 0 0 10px rgba(43, 42, 42, 0.3);
+}
+
+.cancelButton:hover,
+.createButton:hover {
+  border: 2px solid red; 
 }
