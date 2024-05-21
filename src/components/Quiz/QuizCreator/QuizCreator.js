@@ -1,23 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./QuizCreator.module.css";
-import { useDispatch, useSelector } from "react-redux";
-import { addQuestion, removeQuestion, updateQuestion } from "../../../redux/questionsSlice";
 import deleteIcon from '../../../assets/delete.svg';
 
 const QuizCreator = () => {
-  const dispatch = useDispatch();
   const [question, setQuestion] = useState({
     questionText : "",
-    options: [{ text: "" }]
+    options: ["" , ""],
+    correctOption : ""
   });
   const [activeQuestion, setActiveQuestion] = useState(1);
+  const [optionType, setOptionType] = useState("Text");
+  const [questionsLength, setQuestionsLength] = useState(0);
+
+  useEffect(() => {
+      const questions = JSON.parse(localStorage.getItem("questions")) || [];
+      setQuestionsLength(questions.length);
+  }, []);
 
   const handleAddQuestion = () => {
-    dispatch(addQuestion());
+    if (question.questionText.trim() === "") {
+      alert("Please enter question");
+      return;
+    }
+    if (question.options.length < 2) {
+      alert("Please add at least 2 options.");
+      return;
+    }
+    if (question.options.length > 4) {
+      alert("Maximum number of options allowed is 4.");
+      return;
+    }
+
+    const storedQuestions = JSON.parse(localStorage.getItem("questions")) || [];
+    const newQuestion = {
+      questionText: question.questionText,
+      optionType: optionType,
+      options: question.options
+    };
+
+    const updatedQuestions = [...storedQuestions, newQuestion];
+    localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+    localStorage.setItem("optionType", optionType);
+    
+    setQuestion({
+      questionText : "",
+      options: ["", ""]
+    });
+
+    const newQuestionIndex = questionsLength + 1;
+    setQuestionsLength(newQuestionIndex);
+  };
+
+  const handleOptionTypeSet = (type) => {
+    if (!localStorage.getItem("optionType")) { // Check if optionType is not present in local storage
+      setOptionType(type); // Set optionType in state
+      localStorage.setItem("optionType", type); // Set optionType in local storage
+    }
   };
 
   const handleRemoveQuestion = (index) => {
-    dispatch(removeQuestion(index));
+    const storedQuestions = JSON.parse(localStorage.getItem("questions")) || [];
+    const updatedQuestions = storedQuestions.filter((_, idx) => idx !== index);
+
+    localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+
+    setQuestionsLength(updatedQuestions.length);
   };
 
   const handleQuestionChange = (event) => {
@@ -29,7 +76,7 @@ const QuizCreator = () => {
 
   const handleOptionChange = (index, event) => {
     const newOptions = [...question.options];
-    newOptions[index].text = event.target.value;
+    newOptions[index] = event.target.value;
     setQuestion({
       ...question,
       options: newOptions
@@ -39,7 +86,7 @@ const QuizCreator = () => {
   const handleAddOption = () => {
     setQuestion({
       ...question,
-      options: [...question.options, { text: "" }]
+      options: [...question.options, ""]
     });
   };
 
@@ -52,7 +99,19 @@ const QuizCreator = () => {
     });
   };
 
+  const handleCancel = () => {
+    setQuestion({
+      questionText: "",
+      options: ["", ""],
+      correctOption: ""
+    });
+    setActiveQuestion(1);
+    setOptionType("Text");
+  }
+
   const handleQuestionClick = (index) => {
+    const questionarray = JSON.parse(localStorage.getItem("questions"))
+    console.log(questionarray[index]);
     setActiveQuestion(index);
   };
 
@@ -61,13 +120,13 @@ const QuizCreator = () => {
       <div className={styles.quizCreator}>
         <div className={styles.questionNav}>
           <div className={styles.questionNumber}>
-            {question.options.map((_, index) => (
+            {Array.from({ length: questionsLength > 0 ? questionsLength : 1 }).map((_, index) => (
               <div key={index} className={styles.questionItem}>
                 <div
                   className={`${styles.questionCircle} ${activeQuestion === index ? styles.active : ""}`}
                   onClick={() => handleQuestionClick(index)}
                 >
-                  {index + 1}
+                  {index+1}
                 </div>
                 <div className={styles.closeButton} onClick={() => handleRemoveQuestion(index)}>
                   &#10006;
@@ -78,23 +137,6 @@ const QuizCreator = () => {
           </div>
           <span>Max 5 questions</span>
         </div>
-        <div className={styles.optionType}>
-          <span>OptionType</span>
-          <div className={styles.radioButtons}>
-            <div>
-              <input type="radio" id="Text" name="option" />
-              <label for="Text">Text</label>
-            </div>
-            <div>
-              <input type="radio" id="Image" name="option" />
-              <label for="Image">Image</label>
-            </div>
-            <div>
-              <input type="radio" id="Text+Image" name="option" />
-              <label for="Text+Image">Text & Image</label>
-            </div>
-          </div>
-        </div>
         <div className={styles.question}>
           <input
             className={styles.quizType}
@@ -103,16 +145,63 @@ const QuizCreator = () => {
             value={question.questionText}
             onChange={handleQuestionChange}
             />
+          <div className={styles.optionType}>
+          <span>OptionType</span>
+          <div className={styles.radioButtons}>
+            <div onClick={() => setOptionType('Text')}>
+              <input type="radio" id="Text" name="option" checked={optionType === 'Text'} />
+              <label for="Text">Text</label>
+            </div>
+            <div onClick={() => setOptionType('Image')}>
+              <input type="radio" id="Image" name="option" checked={optionType === 'Image'} />
+              <label for="Image">Image</label>
+            </div>
+            <div onClick={() => setOptionType('Text+Image')}>
+              <input type="radio" id="Text+Image" name="option" checked={optionType === 'Text+Image'}/>
+              <label for="Text+Image">Text & Image</label>
+            </div>
+          </div>
+        </div>
           {question.options.map((option, index) => (
             <div key={index} className={styles.options}>
-              <input
-                className={styles.option}
-                type="text"
-                placeholder={`Option ${index + 1}`}
-                name="text"
-                value={option.text}
-                onChange={(e) => handleOptionChange( index, e)}
-              />
+              {optionType === "Text" && (
+                <input
+                  className={styles.option}
+                  type="text"
+                  placeholder='Text'
+                  name="text"
+                  value={option}
+                  onChange={(e) => handleOptionChange(index, e)}
+                />
+              )}
+              {optionType === "Image" && (
+                <input
+                  className={styles.option}
+                  type="text"
+                  placeholder='image URL'
+                  name="image"
+                  onChange={(e) => handleOptionChange(index, e)}
+                />
+              )}
+              {optionType === "Text+Image" && (
+                <div style={{display:'flex',}}>
+                  <input style={{marginRight:'10px'}}
+                    className={styles.option}
+                    type="text"
+                    placeholder='Text'
+                    name="text"
+                    value={option.text}
+                    onChange={(e) => handleOptionChange(index, e)}
+                  />
+                  <input
+                    className={styles.option}
+                    type="text"
+                    placeholder='image URL'
+                    name="image"
+                    onChange={(e) => handleOptionChange(index, e)}
+                  />
+                </div>
+              )}
               <img
                 src={deleteIcon} 
                 alt="Delete option"
@@ -126,7 +215,7 @@ const QuizCreator = () => {
           )}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <button className={styles.cancelButton}>Cancel</button>
+          <button className={styles.cancelButton} onClick={() => handleCancel()}>Cancel</button>
           <button className={styles.createButton}>Create Quiz</button>
         </div>
       </div>

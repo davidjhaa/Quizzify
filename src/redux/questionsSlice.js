@@ -18,9 +18,13 @@ const questionsSlice = createSlice({
       const { index, question } = action.payload;
       state.questions[index] = { ...state.questions[index], ...question }; // Update question at specified index
     },
+    resetQuestions: (state) => {
+      // Reset questions to initial state
+      state.questions = initialState.questions;
+    },
   },
 });
 
-export const { addQuestion, removeQuestion, updateQuestion } = questionsSlice.actions;
+export const { addQuestion, removeQuestion, updateQuestion, resetQuestions } = questionsSlice.actions;
 
 export default questionsSlice.reducer;
