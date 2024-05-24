@@ -8,7 +8,7 @@
     padding: 0;
 }
 
-.quizCreator {
+.quizContainer {
   width: 40vw;
   margin: 0 auto;
   padding: 20px;
@@ -99,6 +99,12 @@ input[type="radio"] {
   margin-right: 5px; /* Adjust the spacing between radio button and label */
 }
 
+.optionsContainer{
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: space-between;
+}
+
 .options {
   display: flex;
   align-items: center;
@@ -121,6 +127,16 @@ input[type="radio"] {
   cursor: pointer;
 }
 
+.timer{
+  display: flex;
+  flex-direction: column;
+}
+
+.timerValue{
+  width: 110%;
+  cursor: pointer;
+}
+
 .addOption{
   width: 50%;
   height: 30px;
@@ -134,6 +150,10 @@ input[type="radio"] {
 
 button {
   margin-top: 10px;
+}
+
+.clicked {
+  background-color: #44d86e;
 }
 
 .createButton {
@@ -173,4 +193,18 @@ button {
 .cancelButton:hover,
 .createButton:hover {
   border: 2px solid red; 
+}
+
+.popup {
+  width: 400px;
+  height: 400px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #000000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
 }

@@ -13,7 +13,6 @@ function Login() {
       position: "top-center"
     });
   }
-
   const notify2 = () => {
     toast.error("Invalid Credentials !", {
       position: "top-right"

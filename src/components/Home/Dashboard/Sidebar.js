@@ -1,18 +1,31 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import styles from "./Sidebar.module.css";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { setComponent } from '../../../redux/componentSlice'
 
 
-const Sidebar = () => {
-  const dispatch = useDispatch();
+const Sidebar = ({setComponent }) => {
   const navigate = useNavigate();
-  const [activeButton, setActiveButton] = useState("dashboard");
+  const [activeButton, setActiveButton] = useState(
+    localStorage.getItem("activeButton") || "dashboard"
+  );
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setActiveButton(localStorage.getItem('activeButton') || 'dashboard');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []); 
 
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName);
-    dispatch(setComponent(buttonName));
+    localStorage.setItem("activeButton", buttonName);
+    setComponent(buttonName);
+    navigate(`/${buttonName}`);
   };
 
   const handleLogout = () => {

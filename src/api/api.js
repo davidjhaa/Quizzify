@@ -25,10 +25,10 @@ export const loginAdmin = async ({ email, password }) => {
             email,
         });
         if (response.status === 200 && response.data?.token) {
-            const { token, name, adminId } = response.data;
-            localStorage.setItem("token", token);
-            localStorage.setItem("name", name);
-            localStorage.setItem("adminId", adminId);
+            const { token, name, userId } = response.data;
+            localStorage.setItem("token",token);
+            localStorage.setItem("name", JSON.stringify(name));
+            localStorage.setItem("userId", JSON.stringify(userId));
         }
         return response;
     } 

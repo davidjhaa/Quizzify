@@ -1,34 +1,76 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import Sidebar from '../../components/Home/Dashboard/Sidebar';
-import DashBoard from '../../components/Home/Dashboard/DashBoard';
-import CreateQuiz from '../../components/Home/CreateQuiz/CreateQuiz';
-import { selectComponentClicked } from '../../redux/componentSlice';
-import styles from './HomePage.module.css';
+import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/Home/Dashboard/Sidebar";
+import DashBoard from "../../components/Home/Dashboard/DashBoard";
+import Analytics from "../../components/Home/Analytics/Analytics";
+import QuizForm from "../../components/Home/CreateQuiz/QuizForm/QuizForm";
+import styles from "./HomePage.module.css";
 
 const HomePage = () => {
-  const componentName = useSelector(selectComponentClicked);
- 
+  const [component, setComponent] = useState(
+    localStorage.getItem("activeButton") || "dashboard"
+  );
+
+  useEffect(() => {
+    const storedComponent = localStorage.getItem("component");
+    if (storedComponent) {
+      setComponent(storedComponent);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === "activeButton") {
+        setComponent(event.newValue);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+
   const renderComponent = () => {
-    switch (componentName.component) {
-      case 'dashboard':
+    switch (component) {
+      case "dashboard":
         return <DashBoard className={styles.MainContent} />;
-      case 'createQuiz':
-        return <CreateQuiz className={styles.MainContent} />;
-        case 'analytics':
-          return <CreateQuiz className={styles.MainContent} />;
+      case "analytics":
+        return <Analytics className={styles.MainContent} />;
+      case "createQuiz":
+        return (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <QuizForm />
+            </div>
+          </div>
+        );
       default:
         return null;
     }
   };
 
-
   return (
     <div className={styles.appContainer}>
-      <Sidebar className={styles.Sidebar}/>
+      <Sidebar setComponent={setComponent} className={styles.Sidebar} />
       {renderComponent()}
     </div>
   );
 };
+
 export default HomePage;
 
+
+
+
+{/* {isQuizFormOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <QuizForm
+              isQuizFormOpen={isQuizFormOpen}
+              setQuizFormOpen={setQuizFormOpen}
+            />
+          </div>
+        </div>
+      )} */}
