@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuizQuestions.module.css";
 import deleteIcon from "../../../../assets/delete.svg";
-import QuizLink from '../QuizLink/QuizLink'
+import QuizLink from "../QuizLink/QuizLink";
 import axios from "axios";
-const api = process.env.Backend_URL;
+const apiUrl = process.env.REACT_APP_Backend_URL;
 
 const QuizQuestions = ({ quizName, quizType }) => {
-  // console.log(api);
+  console.log(apiUrl);
   const navigate = useNavigate();
   const [question, setQuestion] = useState({
     questionText: "",
-    options: ["", ""],
+    options: [""],
     correctOption: "",
   });
   const [activeQuestion, setActiveQuestion] = useState(1);
@@ -26,6 +26,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
   const [quizCreated, setQuizCreated] = useState(false);
 
   useEffect(() => {
+    console.log(apiUrl);
     const questions = JSON.parse(localStorage.getItem("questions")) || [];
     setQuestionsLength(questions.length);
   }, []);
@@ -57,10 +58,14 @@ const QuizQuestions = ({ quizName, quizType }) => {
     }
 
     const storedQuestions = JSON.parse(localStorage.getItem("questions")) || [];
+    const optionsWithCount = question.options.map((option) => ({
+      option: option,
+      count: 0,
+    }));
     const newQuestion = {
       questionNumber: storedQuestions.length + 1,
       questionText: question.questionText,
-      options: question.options,
+      options: optionsWithCount,
       correctOption: selectedOption,
     };
 
@@ -68,7 +73,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
     localStorage.setItem("questions", JSON.stringify(updatedQuestions));
 
     setQuestion({
-      questionNuber: 1,
+      questionNumber: 1,
       questionText: "",
       options: ["", ""],
     });
@@ -78,7 +83,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
 
   const handleOptionTypeSet = (type) => {
     if (!localStorage.getItem("optionType")) {
-      setOptionType(type); 
+      setOptionType(type);
     }
   };
 
@@ -119,21 +124,23 @@ const QuizQuestions = ({ quizName, quizType }) => {
     setSelectedOption(question.options[selectedOptionIndex]);
   };
 
-  const handleOptionChange2 = (index, e) => {
+  const handleOptionChange2 = (index, e, separator) => {
     const { name, value } = e.target;
     const newOptions = [...question.options];
-    const optionToUpdate = newOptions[index];
 
-    // Split the option into text and image parts
-    const [text, image] = optionToUpdate.split("||");
+    // Determine if the change is for text or image
+    if (optionType === "Text+Image") {
+      let [text, image] = newOptions[index].split(separator);
+      if (name.startsWith("text_")) {
+        text = value;
+      } 
+      else if (name.startsWith("image_")) {
+        image = value;
+      }
+      newOptions[index] = `${text}${separator}${image}`;
+    }
 
-    // Update text or image based on the input name
-    const updatedOption =
-      name === "text" ? `${value}||${image}` : `${text}||${value}`;
-
-    // Update the options array with the modified option
-    newOptions[index] = updatedOption;
-
+    // Update the options in the state
     setQuestion({
       ...question,
       options: newOptions,
@@ -168,40 +175,57 @@ const QuizQuestions = ({ quizName, quizType }) => {
     const optionType = JSON.parse(localStorage.getItem("optionType"));
     const token = localStorage.getItem("token");
     axios.defaults.headers.common["Authorization"] = token;
-    try{
-      const response = await axios.post("http://localhost:3001/quiz/createQuiz", {
-        Questions,
-        optionType,
-        quizName,
-        quizType,
-        timer,
-      });
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/quiz/createQuiz",
+        {
+          Questions,
+          optionType,
+          quizName,
+          quizType,
+          timer,
+        }
+      );
       if (response.status === 201) {
-        const link = response.data.quizUrl
-        setQuizLink(link)
+        const link = response.data.quizUrl;
+        setQuizLink(link);
         setQuizCreated(true);
-        localStorage.removeItem('questions');
-        localStorage.removeItem('optionType');
-        localStorage.removeItem('timer')
+        localStorage.removeItem("questions");
+        localStorage.removeItem("optionType");
+        localStorage.removeItem("timer");
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.error("Error creating quiz:", error.message);
     }
   };
 
   const handleCancel = () => {
     localStorage.setItem("activeButton", JSON.stringify("dashboard"));
-    localStorage.removeItem('questions');
-    localStorage.removeItem('optionType');
-    localStorage.removeItem('timer')
+    localStorage.removeItem("questions");
+    localStorage.removeItem("optionType");
+    localStorage.removeItem("timer");
     navigate("/dashboard");
   };
 
   const handleQuestionClick = (index) => {
-    const questionarray = JSON.parse(localStorage.getItem("questions"));
-    console.log(questionarray[index]);
+    const questionArray = JSON.parse(localStorage.getItem("questions"));
+    const clickedQuestion = questionArray[index];
+
+    // Update the active question
     setActiveQuestion(index);
+
+    // Update the question with the retrieved question data
+    setQuestion({
+      questionText: clickedQuestion.questionText,
+      options: clickedQuestion.options,
+      correctOption: clickedQuestion.correctOption,
+    });
+
+    // Update the selected option
+    setSelectedOption(clickedQuestion.correctOption);
+
+    // Update the option type from localStorage
+    setOptionType(localStorage.getItem("optionType") || optionType);
   };
 
   const handleTimerClick = (value) => {
@@ -210,12 +234,12 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   return (
-    // <div className={styles.parent}>
     <div className="styles.main">
+      {console.log(question.options)}
       {quizCreated ? (
         <div className={styles.modalOverlay1}>
           <div className={styles.modalContent}>
-            <QuizLink quizLink={quizLink}/>
+            <QuizLink quizLink={quizLink} />
           </div>
         </div>
       ) : (
@@ -341,32 +365,45 @@ const QuizQuestions = ({ quizName, quizType }) => {
                     </React.Fragment>
                   )}
                   {optionType === "Text+Image" && (
-                    <div style={{ display: "flex" }}>
-                      <input
-                        type="radio"
-                        name="selectedOption"
-                        checked={selectedOption === option}
-                        onChange={() => handleRadioChange(index)}
-                      />
-                      <input
-                        style={{ marginRight: "10px" }}
-                        className={styles.option}
-                        type="text"
-                        placeholder="Text"
-                        name={`text_${index}`}
-                        value={option.text}
-                        onChange={(e) => handleOptionChange2(index, e)}
-                      />
-                      <input
-                        className={styles.option}
-                        type="text"
-                        placeholder="image URL"
-                        name={`image_${index}`}
-                        value={option.image}
-                        onChange={(e) => handleOptionChange2(index, e)}
-                      />
+                    <div>
+                      {question.options.map((option, index) => {
+                        const separator = "davidjhaa"; 
+                        const [text, imageUrl] = option.split(separator);
+                        return (
+                          <div key={index} style={{ display: "flex", alignItems: "center" }}>
+                            <input
+                              type="radio"
+                              name="selectedOption"
+                              checked={selectedOption === option}
+                              onChange={() => handleRadioChange(index)}
+                            />
+                            <input
+                              style={{ marginRight: "10px" }}
+                              className={styles.option}
+                              type="text"
+                              placeholder="Text"
+                              name={`text_${index}`}
+                              value={text}
+                              onChange={(e) =>
+                                handleOptionChange2(index, e, separator)
+                              }
+                            />
+                            <input
+                              className={styles.option}
+                              type="text"
+                              placeholder="Image URL"
+                              name={`image_${index}`}
+                              value={imageUrl}
+                              onChange={(e) =>
+                                handleOptionChange2(index, e, separator)
+                              }
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
+
                   <img
                     src={deleteIcon}
                     alt="Delete option"
@@ -429,7 +466,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
         </div>
       )}
     </div>
-    // </div>
   );
 };
 

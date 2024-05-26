@@ -23,13 +23,11 @@ const HomePage = () => {
         setComponent(event.newValue);
       }
     };
-
     window.addEventListener("storage", handleStorageChange);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
+  });
 
   const renderComponent = () => {
     switch (component) {

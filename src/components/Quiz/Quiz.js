@@ -104,37 +104,37 @@ const QuizDetails = () => {
             </div>
             <div className={styles.options}>
               {optionType === "Text" &&
-                currentQuestion?.options.map((option, index) => (
+                currentQuestion?.options.map((optionObject, index) => (
                   <button
                     key={index}
-                    onClick={() => handleOptionClick(option)}
+                    onClick={() => handleOptionClick(optionObject.option)}
                     className={
-                      selectedOption === option
+                      selectedOption === optionObject.option // Access option property of optionObject
                         ? styles.selectedOption
                         : styles.option
                     }
                   >
-                    {option}
+                    {optionObject.option}
                   </button>
                 ))}
               {optionType === "Image" &&
-                currentQuestion?.options.map((option, index) => (
+                currentQuestion?.options.map((optionObject, index) => (
                   <img
                     key={index}
-                    src={option}
+                    src={optionObject.option}
                     alt="optionImage"
                     className={`${styles.imageOption} ${
-                      selectedOption === option
+                      selectedOption === optionObject.option
                         ? styles.selectedImageOption
                         : ""
                     }`}
-                    onClick={() => handleOptionClick(option)}
+                    onClick={() => handleOptionClick(optionObject.option)}
                   />
                 ))}
               {optionType === "Text+Image" &&
-                currentQuestion?.options.map((option, index) => {
+                currentQuestion?.options.map((optionObject, index) => {
                   const separator = /david/;
-                  const [text, imageUrl] = option.split(separator);
+                  const [text, imageUrl] = optionObject.option.split(separator);
                   console.log(text);
                   return (
                     <div key={index}>
@@ -143,7 +143,7 @@ const QuizDetails = () => {
                         src={imageUrl}
                         alt="option"
                         className={`${styles.imageOption} ${
-                          selectedOption === option
+                          selectedOption === optionObject
                             ? styles.selectedImageOption
                             : ""
                         }`}

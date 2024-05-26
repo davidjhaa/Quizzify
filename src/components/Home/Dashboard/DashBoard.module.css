@@ -1,6 +1,7 @@
 .mainContent {
   /* overflow: hidden;  */
   width: 82vw;
+  height:100vh;
   padding: 20px;
   background: #EDEDED;
   margin: 0;

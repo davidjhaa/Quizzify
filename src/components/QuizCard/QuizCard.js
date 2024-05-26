@@ -16,10 +16,10 @@ function QuizCard({ q }) {
     <div className={styles.quizCard}>
       <div className={styles.quizInfo}>
         <span>{q.quizName}</span>
-        <span>views 👁️</span>
+        <span style={{color:'#ee9e0a'}}>{q.totalViews} views 👁️</span>
       </div>
       <div>
-        <span>Created On: &nbsp; &nbsp;{date}</span>
+        <span style={{color:'rgb(48 203 97)'}}>Created On : &nbsp;{date}</span>
       </div>
     </div>
   );

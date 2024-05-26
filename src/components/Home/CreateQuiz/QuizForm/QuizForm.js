@@ -23,7 +23,7 @@ const QuizForm = () => {
   };
 
   const handleCancelBtn = () => {
-    localStorage.removeItem('activeButton')
+    localStorage.setItem('activeButton', 'dashboard')
     setShowQuizCreator(false);
     navigate("/dashboard");
   };
