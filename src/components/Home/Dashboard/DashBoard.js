@@ -4,17 +4,30 @@ import QuizCard from "../../QuizCard/QuizCard";
 import axios from "axios";
 
 const MainContent = () => {
-  const [quiz, setQuiz] = useState([]);
+  const [quizzes, setQuizzes] = useState([]);
   const [totalQuiz, setTotalQuiz] = useState(null);
   const [totalQuestion, setTotalQuestion] = useState(null);
+  const[totalViews, setTotalViews] = useState(0);
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get("http://localhost:3001/quiz/number");
-      setTotalQuiz(response.data.number_of_quizzes);
-      setTotalQuestion(response.data.total_number_of_questions);
+    try {
+      async function fetchData() {
+        console.log("call made1");
+        const token = localStorage.getItem("token");
+        axios.defaults.headers.common["Authorization"] = token;
+        console.log("call made2");
+        const response = await axios.get("http://localhost:3001/quiz/stats");
+        console.log("call made3");
+        setTotalQuiz(response.data.number_of_quizzes);
+        setTotalQuestion(response.data.total_number_of_questions);
+        setQuizzes(response.data.quiz);
+        setTotalViews(response.data.totalViews)
+      }
+      fetchData();
+    } 
+    catch (error) {
+      console.log("Error fetching data: call not made");
     }
-    fetchData();
   }, []);
 
   return (
@@ -22,31 +35,35 @@ const MainContent = () => {
       <div className={styles.stats}>
         <div className={styles.stat} style={{ color: "orange" }}>
           <p>
-            {totalQuiz} <span style={{ marginLeft: "10px" }}>quiz</span>{" "}
+            <span style={{ fontSize: "26px", marginRight: "14px" }}>
+              {totalQuiz}
+            </span>{" "}
+            Quiz
           </p>
-          <p>created</p>
+          <p style={{ fontSize: "24px" }}>created</p>
         </div>
-        <div className={styles.stat} style={{ color: "#22803e" }}>
-          <p>{totalQuestion} Questions </p>
-          <p>created</p>
+        <div className={styles.stat} style={{ color: "rgb(26, 242, 98)" }}>
+          <p>
+            <span style={{ fontSize: "26px", marginRight: "10px" }}>
+              {totalQuestion}
+            </span>{" "}
+            Questions
+          </p>
+          <p style={{ fontSize: "24px" }}>created</p>
         </div>
         <div className={styles.stat} style={{ color: "blue" }}>
           <p>
-            {quiz.views} <span style={{ marginLeft: "10px" }}>Total</span>{" "}
+            {totalViews} <span style={{ marginLeft: "10px" }}>Total</span>{" "}
           </p>
           <p>Impressions</p>
         </div>
       </div>
-
       <div className={styles.trendingQuizzes}>
         <h2 className={styles.trendingTitle}>Trending Quizzes</h2>
-        {quiz.length > 0 ? (
-          quiz.map((q) => {
-            <QuizCard value={q} />;
-          })
-        ) : (
-          <p>No any quizzes right now</p>
-        )}
+        <div className={styles.quizzesGrid}>
+          {quizzes.length > 0 &&
+            quizzes.map((q, index) => <QuizCard key={index} q={q} />)}
+        </div>
       </div>
     </div>
   );

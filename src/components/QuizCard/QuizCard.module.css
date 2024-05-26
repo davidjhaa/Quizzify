@@ -1,0 +1,25 @@
+.quizCard {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 16vw;
+  }
+  
+  .quizInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .quizInfo span {
+    margin-right: 10px;
+  }
+  
+  .quizInfo p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #666;
+  }
+  

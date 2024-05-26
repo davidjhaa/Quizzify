@@ -31,11 +31,14 @@ const HomePage = () => {
     };
   }, []);
 
-
   const renderComponent = () => {
     switch (component) {
       case "dashboard":
-        return <DashBoard className={styles.MainContent} />;
+        return (
+          <div className={styles.dashboard}>
+            <DashBoard />
+          </div>
+        );
       case "analytics":
         return <Analytics className={styles.MainContent} />;
       case "createQuiz":
@@ -53,24 +56,10 @@ const HomePage = () => {
 
   return (
     <div className={styles.appContainer}>
-      <Sidebar setComponent={setComponent} className={styles.Sidebar} />
+        <Sidebar setComponent={setComponent} className={styles.Sidebar} />
       {renderComponent()}
     </div>
   );
 };
 
 export default HomePage;
-
-
-
-
-{/* {isQuizFormOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <QuizForm
-              isQuizFormOpen={isQuizFormOpen}
-              setQuizFormOpen={setQuizFormOpen}
-            />
-          </div>
-        </div>
-      )} */}

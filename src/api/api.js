@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrl = `http://localhost:3001/api/v1/auth`;
+const backendUrl = `http://localhost:3001/user`;
 
 export const registerAdmin = async ({ email, password, mobile, name }) => {
     try {

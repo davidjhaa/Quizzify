@@ -89,7 +89,7 @@ const QuizForm = () => {
             </button>
           </div>
         </form>
-      )}
+     )}
     </div>
   );
 };
