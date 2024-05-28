@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuizForm.module.css";
 import QuizQuestions from "../../CreateQuiz/QuizQuestions/QuizQuestions";
+import { useDispatch } from "react-redux";
+import { setComponent } from "../../../../redux/componentSlice";
 
 const QuizForm = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [quizName, setQuizName] = useState("");
   const [quizType, setQuizType] = useState("Q&A");
@@ -23,8 +26,8 @@ const QuizForm = () => {
   };
 
   const handleCancelBtn = () => {
-    localStorage.setItem('activeButton', 'dashboard')
     setShowQuizCreator(false);
+    dispatch(setComponent('dashboard'))
     navigate("/dashboard");
   };
 
@@ -70,7 +73,7 @@ const QuizForm = () => {
                   : styles.buttonStyle
               }
             >
-              Poll Type
+              Poll
             </button>
           </div>
           <div className={styles.buttonContainerStyle}>

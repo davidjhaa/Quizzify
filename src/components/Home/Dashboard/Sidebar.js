@@ -1,30 +1,16 @@
 import React,{useState, useEffect} from "react";
 import styles from "./Sidebar.module.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectComponent, setComponent } from "../../../redux/componentSlice";
 
-
-const Sidebar = ({setComponent }) => {
+const Sidebar = () => {
   const navigate = useNavigate();
-  const [activeButton, setActiveButton] = useState(
-    localStorage.getItem("activeButton") || "dashboard"
-  );
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setActiveButton(localStorage.getItem('activeButton') || 'dashboard');
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []); 
+  const dispatch = useDispatch();
+  const activeComponent = useSelector(selectComponent);
 
   const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName);
-    localStorage.setItem("activeButton", buttonName);
-    setComponent(buttonName);
+    dispatch(setComponent(buttonName));
     navigate(`/${buttonName}`);
   };
 
@@ -39,7 +25,7 @@ const Sidebar = ({setComponent }) => {
       <div className={styles.nav}>
         <button
           className={`${styles.button} ${
-            activeButton === "dashboard" ? styles.active : ""
+            activeComponent === "dashboard" ? styles.active : ""
           }`}
           onClick={() => handleButtonClick("dashboard")}
         >
@@ -47,7 +33,7 @@ const Sidebar = ({setComponent }) => {
         </button>
         <button
           className={`${styles.button} ${
-            activeButton === "analytics" ? styles.active : ""
+            activeComponent === "analytics" ? styles.active : ""
           }`}
           onClick={() => handleButtonClick('analytics')}
         >
@@ -55,7 +41,7 @@ const Sidebar = ({setComponent }) => {
         </button>
         <button
           className={`${styles.button} ${
-            activeButton === "createQuiz" ? styles.active : ""
+            activeComponent === "createQuiz" ? styles.active : ""
           }`}
           onClick={() => handleButtonClick('createQuiz')}
         >

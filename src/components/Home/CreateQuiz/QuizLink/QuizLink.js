@@ -4,8 +4,9 @@ import styles from './QuizLink.module.css'
 function QuizLink({quizLink}) {
   return (
       <div className={styles.parent}>
-        <h1>Quiz created successfully</h1>
-        <button>{quizLink}</button>
+        <h1>Congrats Your Quiz is Published</h1>
+        <button className={styles.link}>{quizLink}</button>
+        <button className={styles.button}>share</button>
       </div>
   )
 }

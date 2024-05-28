@@ -7,25 +7,21 @@ const MainContent = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [totalQuiz, setTotalQuiz] = useState(null);
   const [totalQuestion, setTotalQuestion] = useState(null);
-  const[totalViews, setTotalViews] = useState(0);
+  const [totalViews, setTotalViews] = useState(0);
 
   useEffect(() => {
     try {
       async function fetchData() {
-        console.log("call made1");
         const token = localStorage.getItem("token");
         axios.defaults.headers.common["Authorization"] = token;
-        console.log("call made2");
         const response = await axios.get("http://localhost:3001/quiz/stats");
-        console.log("call made3");
         setTotalQuiz(response.data.number_of_quizzes);
         setTotalQuestion(response.data.total_number_of_questions);
         setQuizzes(response.data.quiz);
-        setTotalViews(response.data.totalViews)
+        setTotalViews(response.data.totalViews);
       }
       fetchData();
-    } 
-    catch (error) {
+    } catch (error) {
       console.log("Error fetching data: call not made");
     }
   }, []);
@@ -61,8 +57,13 @@ const MainContent = () => {
       <div className={styles.trendingQuizzes}>
         <h2 className={styles.trendingTitle}>Trending Quizzes</h2>
         <div className={styles.quizzesGrid}>
-          {quizzes.length > 0 &&
-            quizzes.map((q, index) => <QuizCard key={index} q={q} />)}
+          {/* {quizzes.length > 0 &&
+            quizzes.map((q, index) => <QuizCard key={index} q={q} />)} */}
+          {quizzes.length > 0 ? (
+            quizzes.map((q, index) => <QuizCard key={index} q={q} />)
+          ) : (
+            <p>No any Quizzes right now</p>
+          )}
         </div>
       </div>
     </div>

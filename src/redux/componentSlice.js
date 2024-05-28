@@ -15,6 +15,6 @@ const componentSlice = createSlice({
 });
 
 export const { setComponent } = componentSlice.actions;
-export const selectComponentClicked = (state) => state.component;
+export const selectComponent = (state) => state.component.component;
 export default componentSlice.reducer;
 

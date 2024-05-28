@@ -2,17 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./Quiz.module.css";
+const apiUrl = process.env.REACT_APP_Backend_URL;
 
 const QuizDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [quizType, setquizType] = useState(null);
+  const [quizType, setQuizType] = useState(null);
   const [optionType, setOptionType] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [correctoptions, setCorrectoptions] = useState([]);
-  const [timer, setTimer] = useState(0);
+  const [correctOptions, setCorrectOptions] = useState([]);
+  const [initialTimer, setInitialTimer] = useState(0);
+  const [timer, setTimer] = useState(null);
   const scoreRef = useRef(0);
 
   const fetchQuiz = async () => {
@@ -21,15 +23,19 @@ const QuizDetails = () => {
       const quiz = response.data;
       setQuestions(quiz.questions);
       setOptionType(quiz.optionType);
-      setquizType(quiz.quizType);
+      setQuizType(quiz.quizType);
       if (quiz.timer > 0) {
+        setInitialTimer(quiz.timer);
         setTimer(quiz.timer);
       }
+      // else {
+      //   setTimer(null); // Ensure timer is null if not set
+      // }
       if (quiz.quizType === "Q&A") {
         const correctOptionsArray = response.data.questions.map(
           (question) => question.correctOption
         );
-        setCorrectoptions(correctOptionsArray);
+        setCorrectOptions(correctOptionsArray);
       }
     } catch (error) {
       console.error("Error fetching quiz:", error);
@@ -40,25 +46,34 @@ const QuizDetails = () => {
     setSelectedOption(option);
   };
 
-  const handleNextClick = () => {
-    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-    if (quizType === "Q&A") {
-      if (correctoptions[currentQuestionIndex] === selectedOption) {
-        scoreRef.current++;
-      }
+  const handleNextClick = async () => {
+    if (quizType === "Q&A" && correctOptions[currentQuestionIndex] === selectedOption) {
+      scoreRef.current++;
     }
+    await axios.post(`${apiUrl}/quiz/${id}`, {
+      qnumber: currentQuestionIndex,
+      selected: selectedOption,
+    });
     setSelectedOption(null);
-    setTimer(0);
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    setTimer(initialTimer);  
     window.history.pushState(null, null, window.location.href);
   };
 
-  const handleSubmitClick = () => {
-    if (correctoptions[currentQuestionIndex] === selectedOption) {
+  const handleSubmitClick = async () => {
+    if (quizType === "Q&A" && correctOptions[currentQuestionIndex] === selectedOption) {
       scoreRef.current++;
+      localStorage.setItem("result", scoreRef.current.toString());
+      localStorage.setItem("total", questions.length.toString());
     }
-    localStorage.setItem("result", scoreRef.current.toString());
-    localStorage.setItem("total", questions.length);
+
+    await axios.post(`${apiUrl}/quiz/${id}`, {
+      qnumber: currentQuestionIndex,
+      selected: selectedOption,
+    });
+
     window.history.pushState(null, null, window.location.href);
+    
     navigate("/quiz/result");
   };
 
@@ -72,20 +87,25 @@ const QuizDetails = () => {
       intervalId = setInterval(() => {
         setTimer((prevSeconds) => prevSeconds - 1);
       }, 1000);
+    } else if (timer === 0) {  // Proper handling when the timer reaches zero
+      if (currentQuestionIndex < questions.length - 1) {
+        handleNextClick();
+      } else {
+        handleSubmitClick();  // Ensure submit is called on the last question
+      }
     }
-
     return () => clearInterval(intervalId);
   }, [timer, currentQuestionIndex]);
-    
 
-  if (currentQuestionIndex >= questions.length) {
+  if (currentQuestionIndex == questions.length) {
     navigate("/quiz/result");
   }
 
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <>{console.log(timer)}
+    <>
+      {console.log(timer)}
       <div className={styles.appContainer}>
         <div className={styles.quizContainer}>
           <div className={styles.heading}>

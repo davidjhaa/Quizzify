@@ -1,5 +1,6 @@
 .parent {
     width: 50vw;
+    height: 50vh;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ddd;
@@ -7,4 +8,26 @@
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .link{
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: gray;
+  }
+
+  .button {
+    width: 12vw;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    color: white; 
+    background-color: #41d61f;
   }
