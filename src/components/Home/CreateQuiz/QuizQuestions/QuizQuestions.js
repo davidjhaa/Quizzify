@@ -23,7 +23,9 @@ const QuizQuestions = ({ quizName, quizType }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
+  
   const [stateData] = useState(state?.quiz);
+  console.log(stateData)
   const storedOptionType = useSelector((state) => state.quiz.optionType);
   const storedTimer = useSelector((state) => state.quiz.timer);
   const storedQuestions = useSelector((state) => state.quiz.questions);
@@ -341,30 +343,27 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleQuestionClick = (index) => {
-    if (activeIndex !== index) {
-      dispatch(updateQuestion({ question, index: activeIndex }));
-    }
-  
-    if (index >= storedQuestions.length) {
+    if (index < storedQuestions.length) {
+      if(storedQuestions.length !== activeIndex){
+        dispatch(updateQuestion({ question: question, index: activeIndex }));
+      }
+      setActiveIndex(index);
+      setQuestion({
+        questionText: storedQuestions[index].questionText,
+        options: storedQuestions[index].options.map((opt) => opt.option),
+        correctOption: storedQuestions[index].correctOption,
+      });
+    } else if (index === storedQuestions.length) {
+      console.log("************************")
+      setActiveIndex(index);
       setQuestion({
         questionText: "",
         options: ["", ""],
         correctOption: "",
       });
-    } 
-    else {
-      const clickedQuestion = storedQuestions[index];
-      setQuestion({
-        questionText: clickedQuestion.questionText,
-        options: clickedQuestion.options.map((opt) => opt.option),
-        correctOption: clickedQuestion.correctOption,
-      });
     }
-  
-    setActiveIndex(index);
   };
   
-
   const handleTimerClick = (value) => {
     setTimerLocal(value);
   };
@@ -385,7 +384,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                 length: questionsLength > 0 ? questionsLength + 1 : 1,
               }).map((_, index) => (
                 <div key={index}  className={styles.questionItem}>
-                  {console.log('i', index, 'hfgh', activeIndex)}
+                  {console.log('i', index, 'active index', activeIndex)}
                   <div
                     className={`${styles.questionCircle} ${activeIndex === index ? styles.active : ''}`}
                     onClick={() => handleQuestionClick(index)}

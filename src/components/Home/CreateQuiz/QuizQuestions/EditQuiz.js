@@ -19,7 +19,7 @@ import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 const apiUrl = process.env.REACT_APP_Backend_URL;
 
-const QuizQuestions = ({ quizName, quizType }) => {
+const EditQuiz = ({ quizName }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -27,6 +27,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
   const storedOptionType = useSelector((state) => state.quiz.optionType);
   const storedTimer = useSelector((state) => state.quiz.timer);
   const storedQuestions = useSelector((state) => state.quiz.questions);
+  const [quizType, setQuizType] = useState(state?.quiz.quizType)
 
   const [question, setQuestion] = useState({
     questionText: stateData?.questions[0]?.questionText || "",
@@ -40,7 +41,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
   const [timer, setTimerLocal] = useState(storedTimer || 0);
   const [quizLink, setQuizLink] = useState("");
   const [quizCreated, setQuizCreated] = useState(false);
-  const [editingQuestionIndex, setEditingQuestionIndex] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
 
@@ -85,13 +85,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleAddQuestion = async () => {
-    setActiveIndex(storedQuestions.length+1);
-    const existingQuestion = storedQuestions.find(
-      (q) => q.questionText === question.questionText && q.correctOption === question.correctOption
-    );
-    if (existingQuestion) {
-      return;
-    }
     if (question.questionText.trim() === "" || question.options.length < 2) {
       toast.error(
         "All fields are required and at least 2 options must be provided",
@@ -129,30 +122,22 @@ const QuizQuestions = ({ quizName, quizType }) => {
     }));
 
     const newQuestion = {
-      questionNumber:  editingQuestionIndex !== null ? editingQuestionIndex + 1 : storedQuestions.length + 1,
+      questionNumber: storedQuestions.length + 1,
       questionText: question.questionText,
       options: optionsWithCount,
       correctOption: quizType === "poll" ? null : question.correctOption,
     };
 
-    if (editingQuestionIndex !== null) {
-      const updatedQuestions = storedQuestions.map((q, index) =>
-        index === editingQuestionIndex ? newQuestion : q
-      );
-      dispatch(updateQuestion(updatedQuestions));
-    }
-    else {
-      dispatch(addQuestion(newQuestion));
-      setQuestionsLength(storedQuestions.length + 1);
-    }
+
+    dispatch(addQuestion(newQuestion));
+    setQuestionsLength(storedQuestions.length + 1);
+    setActiveIndex(storedQuestions.length+1);
 
     setQuestion({
       questionText: "",
       options: ["", ""],
       correctOption: "",
     });
-
-    setEditingQuestionIndex(null);
     
   };
 
@@ -164,7 +149,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleRemoveQuestion = (index) => {
-    if (storedQuestions.length >= index) {
+    if (storedQuestions.length > index) {
       dispatch(removeQuestion(index));
 
       if (storedQuestions.length === 1) {
@@ -177,15 +162,14 @@ const QuizQuestions = ({ quizName, quizType }) => {
           options: ["", ""],
           correctOption: "",
         });
-      } else {
+      } 
+      else {
         const newIndex = index > 0 ? index - 1 : 0;
         setQuestionsLength(storedQuestions.length - 1);
+        setActiveIndex(newIndex);
         populateQuestion(newIndex);
       }
-    } else {
-      setQuestionsLength(storedQuestions.length - 1);
-      populateQuestion(index - 1);
-    }
+    } 
   };
 
   const handleQuestionChange = (event) => {
@@ -353,50 +337,38 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleCancel = () => {
-    dispatch(setComponent("dashboard"));
-    navigate("/dashboard");
+    dispatch(setComponent("analytics"));
+    navigate("/analytics");
   };
 
-  const handleQuestionClick = async(index) => {
-    setActiveIndex(index);
-    if (editingQuestionIndex !== null) {
-      await handleAddQuestion();  
-    }
-
-    if (index >= storedQuestions.length) {
+  const handleQuestionClick = (index) => {
+    if (index < storedQuestions.length) {
+      if(storedQuestions.length !== activeIndex){
+        dispatch(updateQuestion({ question: question, index: activeIndex }));
+      }
+      setActiveIndex(index);
+      setQuestion({
+        questionText: storedQuestions[index].questionText,
+        options: storedQuestions[index].options.map((opt) => opt.option),
+        correctOption: storedQuestions[index].correctOption,
+      });
+    } else if (index === storedQuestions.length) {
+      setActiveIndex(index);
       setQuestion({
         questionText: "",
         options: ["", ""],
         correctOption: "",
       });
-      setEditingQuestionIndex(null);
-      return;
-    } 
-    else {
-      setQuestion({
-        questionText: storedQuestions[index].questionText,
-        options: storedQuestions[index].options.map((option) => option.option),
-        correctOption: storedQuestions[index].correctOption,
-      });
-      setEditingQuestionIndex(index);
     }
-    
   };
-
+  
   const handleTimerClick = (value) => {
     setTimerLocal(value);
   };
 
   return (
-    <div clas>
+    <div className={styles.parent}>
       <div className={styles.main}>
-        {quizCreated ? (
-          <div className={styles.modalOverlay1}>
-            <div className={styles.modalContent}>
-              <QuizLink quizLink={quizLink} />
-            </div>
-          </div>
-        ) : (
           <div className={styles.quizContainer}>
             <div className={styles.questionNav}>
               <div className={styles.questionNumber}>
@@ -404,7 +376,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                   length: questionsLength > 0 ? questionsLength + 1 : 1,
                 }).map((_, index) => (
                   <div key={index}  className={styles.questionItem}>
-                    {console.log('i', index, 'hfgh', activeIndex)}
+                    {console.log('i', index, 'active index', activeIndex)}
                     <div
                       className={`${styles.questionCircle} ${activeIndex === index ? styles.active : ''}`}
                       onClick={() => handleQuestionClick(index)}
@@ -422,7 +394,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                     </div>
                   </div>
                 ))}
-                {questionsLength < 5 && (
+                {questionsLength <= 5 && (
                   <div
                     onClick={handleAddQuestion}
                     style={{
@@ -638,11 +610,10 @@ const QuizQuestions = ({ quizName, quizType }) => {
               </button>
             </div>
           </div>
-        )}
         <ToastContainer autoClose={1500} />
       </div>
     </div>
   );
 };
 
-export default QuizQuestions;
+export default EditQuiz;
