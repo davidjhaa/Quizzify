@@ -1,5 +1,5 @@
 import axios from "axios";
-const backendUrl = `http://localhost:3001/user`;
+const backendUrl = `${process.env.REACT_APP_Backend_URL}/user`;
 
 export const registerAdmin = async ({ email, password, mobile, name }) => {
     try {
@@ -13,7 +13,7 @@ export const registerAdmin = async ({ email, password, mobile, name }) => {
         return response;
     } 
     catch (error) {
-        console.log(error);
+        return error;
     }
 };
 

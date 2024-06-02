@@ -1,33 +1,93 @@
 .main {
-    width: 82vw;
+  width: 82vw;
   height:100vh;
   padding: 20px;
   background: #EDEDED;
   margin: 0;
   overflow-y: auto;
+  position: relative;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
+}
+
+  
+.analyticsContainer {
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
   
-  .analyticsContainer {
-    background-color: #f2f2f2;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .quizItem {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .quizItem span {
-    margin-right: 10px;
-  }
-  
+.quizItem {
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+}
+
+.quizItem span {
+  margin-right: 10px;
+}
+
+.link{
+  cursor: pointer;
+  color: blue;
+text-decoration: underline;
+}
+
+
+.deleteConfirmation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001; 
+}
+
+.confirmationBox {
+  width: 40vw;
+  height: 30vh;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.confirmationBox button {
+  background-color: #007bff; 
+  color: #fff; 
+  border: none; 
+  padding: 10px 20px; 
+  cursor: pointer; 
+  margin-right: 10px; 
+  border-radius: 4px;
+  margin-right: 40px;
+}
+
+.confirmationBox button:hover {
+  background-color: #0056b3; 
+}

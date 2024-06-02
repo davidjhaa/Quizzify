@@ -51,7 +51,6 @@
   .selectedOption {
     background-color: rgb(89, 219, 115); 
     border: none;
-    /* margin-bottom: 20px; */
     border-radius: 5px;
   }
 
@@ -85,4 +84,20 @@
     border-radius: 5px;
     cursor: pointer;
   }
+
+  .textImageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .textImageContainer:hover {
+    border-color: blue;
+  }
   
+  .selectedTextImageOption{
+    border: 2px solid rgb(89, 219, 115); 
+  }

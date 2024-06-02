@@ -45,7 +45,6 @@ function Login() {
 
       const result = await loginAdmin(formData);
       if(result){
-        console.log(result);
         notify();
         setTimeout(() => {
           navigate('/dashboard');

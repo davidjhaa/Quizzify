@@ -4,6 +4,7 @@ import styles from "./QuizForm.module.css";
 import QuizQuestions from "../../CreateQuiz/QuizQuestions/QuizQuestions";
 import { useDispatch } from "react-redux";
 import { setComponent } from "../../../../redux/componentSlice";
+import {resetQuiz} from "../../../../redux/quizSlice";
 
 const QuizForm = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,8 @@ const QuizForm = () => {
   const [quizType, setQuizType] = useState("Q&A");
   const [showQuizCreator, setShowQuizCreator] = useState(false);
 
+  dispatch(resetQuiz())
+  
   const handleQuizNameChange = (e) => {
     setQuizName(e.target.value);
   };
@@ -66,9 +69,9 @@ const QuizForm = () => {
             </button>
             <button
               type="button"
-              onClick={() => handleQuizTypeChange("poll")}
+              onClick={() => handleQuizTypeChange("Poll")}
               className={
-                quizType === "poll"
+                quizType === "Poll"
                   ? styles.activeButtonStyle
                   : styles.buttonStyle
               }

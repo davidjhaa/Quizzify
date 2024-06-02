@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styles from "./DashBoard.module.css";
-import QuizCard from "../../QuizCard/QuizCard";
+import QuizCard from "../../Quiz/QuizCard/QuizCard";
 import axios from "axios";
 
 const MainContent = () => {
   const [quizzes, setQuizzes] = useState([]);
-  const [totalQuiz, setTotalQuiz] = useState(null);
-  const [totalQuestion, setTotalQuestion] = useState(null);
+  const [totalQuiz, setTotalQuiz] = useState(0);
+  const [totalQuestion, setTotalQuestion] = useState(0);
   const [totalViews, setTotalViews] = useState(0);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const MainContent = () => {
       async function fetchData() {
         const token = localStorage.getItem("token");
         axios.defaults.headers.common["Authorization"] = token;
-        const response = await axios.get("http://localhost:3001/quiz/stats");
+        const response = await axios.get(`${process.env.REACT_APP_Backend_URL}/quiz/stats`);
         setTotalQuiz(response.data.number_of_quizzes);
         setTotalQuestion(response.data.total_number_of_questions);
         setQuizzes(response.data.quiz);
@@ -47,18 +47,19 @@ const MainContent = () => {
           </p>
           <p style={{ fontSize: "24px" }}>created</p>
         </div>
-        <div className={styles.stat} style={{ color: "blue" }}>
+        <div className={styles.stat} style={{ color: "rgb(26, 242, 98)" }}>
           <p>
-            {totalViews} <span style={{ marginLeft: "10px" }}>Total</span>{" "}
+            <span style={{ fontSize: "26px", marginRight: "10px" }}>
+              {totalViews}
+            </span>{" "}
+            Impression
           </p>
-          <p>Impressions</p>
+          <p style={{ fontSize: "24px" }}>created</p>
         </div>
       </div>
       <div className={styles.trendingQuizzes}>
         <h2 className={styles.trendingTitle}>Trending Quizzes</h2>
         <div className={styles.quizzesGrid}>
-          {/* {quizzes.length > 0 &&
-            quizzes.map((q, index) => <QuizCard key={index} q={q} />)} */}
           {quizzes.length > 0 ? (
             quizzes.map((q, index) => <QuizCard key={index} q={q} />)
           ) : (

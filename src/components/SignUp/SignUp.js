@@ -53,10 +53,13 @@ function SignUp() {
         return;
       }
 
-      const result = await registerAdmin(formData);
+      const result = await registerAdmin(formData).catch(error => {
+        notify(error.message);
+    });
+
       if(result){
         console.log(result);
-        notify();
+        notify("Registration successful");
         setTimeout(() => {
           navigate('/login');
         }, 1500);

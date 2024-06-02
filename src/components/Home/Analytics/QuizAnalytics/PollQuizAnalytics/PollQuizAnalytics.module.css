@@ -1,0 +1,15 @@
+.main{
+    background-color: gainsboro;
+    width: 60vw;
+    border-radius: 10px;
+    padding: 10px 10px 10px 20px;
+    overflow-y: auto;
+}
+
+.option{
+    border: 1px solid gray;
+    margin: 10px;
+    padding: 12px;
+    text-align: center;
+    border-radius: 4px;
+}

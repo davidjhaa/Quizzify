@@ -1,131 +1,174 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setComponent } from "../../../../redux/componentSlice";
-import { useNavigate } from "react-router-dom";
+import {
+  setQuestions,
+  addQuestion,
+  removeQuestion,
+  setOptionType,
+  updateQuestion,
+  setTimer,
+} from "../../../../redux/quizSlice";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./QuizQuestions.module.css";
 import deleteIcon from "../../../../assets/delete.svg";
 import QuizLink from "../QuizLink/QuizLink";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 const apiUrl = process.env.REACT_APP_Backend_URL;
 
 const QuizQuestions = ({ quizName, quizType }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const [stateData] = useState(state?.quiz);
+  const storedOptionType = useSelector((state) => state.quiz.optionType);
+  const storedTimer = useSelector((state) => state.quiz.timer);
+  const storedQuestions = useSelector((state) => state.quiz.questions);
+
   const [question, setQuestion] = useState({
-    questionText: "",
-    options: ["", ""],
-    correctOption: "",
+    questionText: stateData?.questions[0]?.questionText || "",
+    options: stateData?.questions[0]?.options.map((opt) => opt.option) || ["","",],
+    correctOption: stateData?.questions[0]?.correctOption || "",
   });
-  const [activeQuestion, setActiveQuestion] = useState(1);
-  const [optionType, setOptionType] = useState("Text");
-  const [render, setRender] = useState(false);
-  const [questionsLength, setQuestionsLength] = useState(0);
-  const [timer, setTimer] = useState(0);
-  const [clickedButton, setClickedButton] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [optionType, setOptionTypeLocal] = useState(storedOptionType || "Text");
+  const [questionsLength, setQuestionsLength] = useState(
+    storedQuestions.length || 0
+  );
+  const [timer, setTimerLocal] = useState(storedTimer || 0);
   const [quizLink, setQuizLink] = useState("");
   const [quizCreated, setQuizCreated] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
 
   useEffect(() => {
-    console.log(apiUrl);
-    const questions = JSON.parse(localStorage.getItem("questions")) || [];
-    if (questions.length > 0) {
-      populateQuestion(0);
+    if (stateData) {
+      dispatch(setQuestions(stateData.questions));
+      dispatch(setOptionType(stateData.optionType));
+      dispatch(setTimer(stateData.timer));
+
+      setOptionTypeLocal(stateData.optionType);
+      setTimerLocal(stateData.timer);
+      setQuestionsLength(stateData.questions.length);
+
+      if (stateData.questions.length > 0) {
+        const firstQuestion = stateData.questions[0];
+        setQuestion({
+          questionText: firstQuestion.questionText,
+          options: firstQuestion.options.map((option) => option.option),
+          correctOption: firstQuestion.correctOption || "",
+        });
+      }
+      setActiveIndex(0); 
     }
-    setQuestionsLength(questions.length);
-  }, []);
+  }, [stateData, dispatch]);
+
+  useEffect(() => {
+    setQuestionsLength(storedQuestions.length);
+  }, [storedQuestions]);
 
   const populateQuestion = (index) => {
-    setRender(true);
-    const questions = JSON.parse(localStorage.getItem("questions")) || [];
-    if (questions.length > 0) {
-      const clickedQuestion = questions[index];
-      setActiveQuestion(index);
+    if (storedQuestions.length > 0 && index < storedQuestions.length) {
+      const clickedQuestion = storedQuestions[index];
       setQuestion({
         questionText: clickedQuestion.questionText,
         options: clickedQuestion.options.map((opt) => opt.option),
         correctOption: clickedQuestion.correctOption,
       });
-      setSelectedOption(clickedQuestion.correctOption);
-      setOptionType(localStorage.getItem("optionType") || optionType);
+      if (storedOptionType) {
+        setOptionTypeLocal(storedOptionType);
+      }
     }
   };
 
   const handleAddQuestion = async () => {
-    if (question.questionText.trim() === "") {
-      alert("Please enter question");
+    if (question.questionText.trim() === "" || question.options.length < 2) {
+      toast.error(
+        "All fields are required and at least 2 options must be provided",
+        {
+          position: "top-right",
+        }
+      );
       return;
     }
-    if (question.options.length < 2) {
-      alert("Please add at least 2 options.");
-      return;
-    }
+
     for (let i = 0; i < question.options.length; i++) {
       if (question.options[i].trim() === "") {
-        alert("Option cannot be empty.");
+        toast.error("Option cannot be empty", {
+          position: "top-right",
+        });
         return;
       }
     }
-    if (question.options.length > 4) {
-      alert("Maximum number of options allowed is 4.");
+    if (quizType !== "poll" && !question.correctOption) {
+      toast.error("Please select the correct option", {
+        position: "top-right",
+      });
       return;
     }
-    if (!localStorage.getItem("optionType")) {
-      localStorage.setItem("optionType", JSON.stringify(optionType));
+    if (storedOptionType === "") {
+      dispatch(setOptionType(optionType));
     }
-    if (!localStorage.getItem("timer") && timer !== 0) {
-      localStorage.setItem("timer", JSON.stringify(timer));
+    if (storedTimer === 0) {
+      dispatch(setTimer(timer));
     }
 
-    const storedQuestions = JSON.parse(localStorage.getItem("questions")) || [];
     const optionsWithCount = question.options.map((option) => ({
       option: option,
       count: 0,
     }));
+
     const newQuestion = {
       questionNumber: storedQuestions.length + 1,
       questionText: question.questionText,
       options: optionsWithCount,
-      correctOption: selectedOption,
+      correctOption: quizType === "poll" ? null : question.correctOption,
     };
 
-    const updatedQuestions = [...storedQuestions, newQuestion];
-    localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+
+    dispatch(addQuestion(newQuestion));
+    setQuestionsLength(storedQuestions.length + 1);
+    setActiveIndex(storedQuestions.length+1);
 
     setQuestion({
       questionText: "",
       options: ["", ""],
       correctOption: "",
     });
-
-    setQuestionsLength(updatedQuestions.length + 1);
-    setActiveQuestion(updatedQuestions.length - 1);
-    setSelectedOption("");
+    
   };
 
   const handleOptionTypeSet = (type) => {
-    if (!localStorage.getItem("optionType")) {
-      setOptionType(type);
+    setOptionTypeLocal(type);
+    if (!storedOptionType) {
+      dispatch(setOptionType(type));
     }
   };
 
   const handleRemoveQuestion = (index) => {
-    const storedQuestions = JSON.parse(localStorage.getItem("questions")) || [];
-    const updatedQuestions = storedQuestions.filter((_, idx) => idx !== index);
+    if (storedQuestions.length > index) {
+      dispatch(removeQuestion(index));
 
-    localStorage.setItem("questions", JSON.stringify(updatedQuestions));
-    if (updatedQuestions.length === 0) {
-      localStorage.removeItem("optionType");
-      localStorage.removeItem("timer");
-      localStorage.removeItem("questions");
-      setQuestion({ questionText: "", options: ["", ""], correctOption: "" });
-    }
-
-    setQuestionsLength(updatedQuestions.length);
-
-    if (updatedQuestions.length > 0) {
-      populateQuestion(0);
-    }
+      if (storedQuestions.length === 1) {
+        dispatch(setOptionType(""));
+        dispatch(setTimer(0));
+        dispatch(setQuestions([]));
+        setQuestionsLength(0);
+        setQuestion({
+          questionText: "",
+          options: ["", ""],
+          correctOption: "",
+        });
+      } 
+      else {
+        const newIndex = index > 0 ? index - 1 : 0;
+        setQuestionsLength(storedQuestions.length - 1);
+        setActiveIndex(newIndex);
+        populateQuestion(newIndex);
+      }
+    } 
   };
 
   const handleQuestionChange = (event) => {
@@ -145,7 +188,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleRadioChange = (index) => {
-    setSelectedOption(question.options[index]);
+    setQuestion({...question, correctOption : question.options[index]});
   };
 
   const handleOptionChange2 = (index, e, separator) => {
@@ -153,7 +196,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
     const newOptions = [...question.options];
 
     if (optionType === "Text+Image") {
-      // Ensure the option is split correctly, even if one part is undefined
       let [text = "", image = ""] = newOptions[index].split(separator);
 
       if (name.startsWith("text_")) {
@@ -165,7 +207,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
       newOptions[index] = `${text}${separator}${image}`;
     }
 
-    // Update the options in the state
     setQuestion({
       ...question,
       options: newOptions,
@@ -189,38 +230,108 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleCreateQuiz = async () => {
-    if (question.questionText !== "") {
-      await handleAddQuestion();
+    if (question.questionText.trim() !== "" && question.options.length >= 2) {
+      for (let i = 0; i < question.options.length; i++) {
+        if (question.options[i].trim() === "") {
+          toast.error("Option cannot be empty", {
+            position: "top-right",
+          });
+          return;
+        }
+      }
+      if (quizType !== "poll" && !question.correctOption) {
+        toast.error("Please select the correct option", {
+          position: "top-right",
+        });
+        return;
+      }
+      if (storedOptionType === "") {
+        dispatch(setOptionType(optionType));
+      }
+      if (storedTimer === 0) {
+        dispatch(setTimer(timer));
+      }
+  
+      const optionsWithCount = question.options.map((option) => ({
+        option: option,
+        count: 0,
+      }));
+  
+      const newQuestion = {
+        questionNumber: storedQuestions.length + 1,
+        questionText: question.questionText,
+        options: optionsWithCount,
+        correctOption: quizType === "poll" ? null : question.correctOption,
+      };
+  
+      dispatch(addQuestion(newQuestion));
+  
+      setQuestion({
+        questionText: "",
+        options: ["", ""],
+        correctOption: "",
+      });
+  
+      setQuestionsLength(storedQuestions.length + 1);
     }
-    let Questions = JSON.parse(localStorage.getItem("questions"));
-    Questions = Questions.map((question, index) => ({
+  
+    const Questions = [...storedQuestions, {
+      questionNumber: storedQuestions.length + 1,
+      questionText: question.questionText,
+      options: question.options.map(option => ({
+        option: option,
+        count: 0,
+      })),
+      correctOption: quizType === "poll" ? null : question.correctOption,
+    }].map((question, index) => ({
       ...question,
       questionNumber: index + 1,
     }));
-    const optionType = JSON.parse(localStorage.getItem("optionType"));
+  
+    if (Questions.length === 0 || storedOptionType === "") {
+      toast.error("At least one Question is required with options");
+      return;
+    }
+  
     const token = localStorage.getItem("token");
     axios.defaults.headers.common["Authorization"] = token;
+  
     try {
-      const response = await axios.post(
-        "http://localhost:3001/quiz/createQuiz",
-        {
+      let response;
+      if (state?.edit) {
+        response = await axios.patch(`${apiUrl}/quiz/updateQuiz/${state.quizId}`, {
           Questions,
-          optionType,
+          optionType: storedOptionType,
           quizName,
           quizType,
-          timer,
+          timer: storedTimer,
+        });
+      } else {
+        response = await axios.post(`${apiUrl}/quiz/createQuiz`, {
+          Questions,
+          optionType: storedOptionType,
+          quizName,
+          quizType,
+          timer: storedTimer,
+        });
+      }
+  
+      if (response.status === 201 || response.status === 200) {
+        const message = state?.edit ? "Quiz Updated Successfully" : "Quiz Created Successfully";
+        toast.success(message, {
+          position: "top-right",
+        });
+  
+        if (response.data.quizId) {
+          setQuizLink(`${window.location.origin}/quiz/${response.data.quizId}`);
+          setQuizCreated(true);
         }
-      );
-      if (response.status === 201) {
-        const link = response.data.quizUrl;
-        setQuizLink(link);
-        setQuizCreated(true);
-        localStorage.removeItem("questions");
-        localStorage.removeItem("optionType");
-        localStorage.removeItem("timer");
       }
     } catch (error) {
-      console.error("Error creating quiz:", error.message);
+      console.error("Error creating/updating quiz:", error.message);
+      toast.error("Failed to create/update quiz", {
+        position: "top-right",
+      });
     }
   };
 
@@ -230,17 +341,36 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleQuestionClick = (index) => {
-    populateQuestion(index);
+    if (activeIndex !== index) {
+      dispatch(updateQuestion({ question, index: activeIndex }));
+    }
+  
+    if (index >= storedQuestions.length) {
+      setQuestion({
+        questionText: "",
+        options: ["", ""],
+        correctOption: "",
+      });
+    } 
+    else {
+      const clickedQuestion = storedQuestions[index];
+      setQuestion({
+        questionText: clickedQuestion.questionText,
+        options: clickedQuestion.options.map((opt) => opt.option),
+        correctOption: clickedQuestion.correctOption,
+      });
+    }
+  
+    setActiveIndex(index);
   };
+  
 
   const handleTimerClick = (value) => {
-    setTimer(value);
-    setClickedButton(value);
+    setTimerLocal(value);
   };
 
   return (
-    <div className="styles.main">
-      {console.log(question.options)}
+    <div className={styles.main}>
       {quizCreated ? (
         <div className={styles.modalOverlay1}>
           <div className={styles.modalContent}>
@@ -252,26 +382,28 @@ const QuizQuestions = ({ quizName, quizType }) => {
           <div className={styles.questionNav}>
             <div className={styles.questionNumber}>
               {Array.from({
-                length: questionsLength > 0 ? questionsLength : 1,
+                length: questionsLength > 0 ? questionsLength + 1 : 1,
               }).map((_, index) => (
-                <div key={index} className={styles.questionItem}>
+                <div key={index}  className={styles.questionItem}>
+                  {console.log('i', index, 'hfgh', activeIndex)}
                   <div
-                    className={`${styles.questionCircle} ${
-                      activeQuestion === index ? styles.active : ""
-                    }`}
+                    className={`${styles.questionCircle} ${activeIndex === index ? styles.active : ''}`}
                     onClick={() => handleQuestionClick(index)}
                   >
                     {index + 1}
                     <div
                       className={styles.closeButton}
-                      onClick={() => handleRemoveQuestion(index)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveQuestion(index);
+                      }}
                     >
                       &#10006;
                     </div>
                   </div>
                 </div>
               ))}
-              {questionsLength < 5 && (
+              {questionsLength <= 5 && (
                 <div
                   onClick={handleAddQuestion}
                   style={{
@@ -281,8 +413,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                     marginLeft: "15px",
                   }}
                 >
-                  {" "}
-                  &#43;
+                  <FaPlus style={{ color: "gray" }} />
                 </div>
               )}
             </div>
@@ -300,35 +431,60 @@ const QuizQuestions = ({ quizName, quizType }) => {
           <div className={styles.optionType}>
             <span>OptionType</span>
             <div className={styles.radioButtons}>
-              <div onClick={() => handleOptionTypeSet("Text")}>
+              <div
+                onClick={(e) => {
+                  if (storedOptionType === "") {
+                    handleOptionTypeSet("Text");
+                  } else {
+                    e.preventDefault();
+                  }
+                }}
+              >
                 <input
                   type="radio"
                   id="Text"
                   name="option"
                   checked={optionType === "Text"}
-                  disabled={localStorage.getItem("optionType") !== null}
+                  disabled={storedOptionType !== ""}
                 />
-                <label for="Text">Text</label>
+                <label htmlFor="Text">Text</label>
               </div>
-              <div onClick={() => handleOptionTypeSet("Image")}>
+              <div
+                onClick={(e) => {
+                  if (storedOptionType === "") {
+                    handleOptionTypeSet("Image");
+                  } else {
+                    e.preventDefault();
+                  }
+                }}
+              >
                 <input
                   type="radio"
                   id="Image"
                   name="option"
                   checked={optionType === "Image"}
-                  disabled={localStorage.getItem("optionType") !== null}
+                  disabled={storedOptionType !== ""}
                 />
-                <label for="Image">Image</label>
+                <label htmlFor="Image">Image</label>
               </div>
-              <div onClick={() => handleOptionTypeSet("Text+Image")}>
+
+              <div
+                onClick={(e) => {
+                  if (storedOptionType === "") {
+                    handleOptionTypeSet("Text+Image");
+                  } else {
+                    e.preventDefault();
+                  }
+                }}
+              >
                 <input
                   type="radio"
                   id="Text+Image"
                   name="option"
                   checked={optionType === "Text+Image"}
-                  disabled={localStorage.getItem("optionType") !== null}
+                  disabled={storedOptionType !== ""}
                 />
-                <label for="Text+Image">Text & Image</label>
+                <label htmlFor="Text+Image">Text & Image</label>
               </div>
             </div>
           </div>
@@ -341,8 +497,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
                       {quizType === "Q&A" && (
                         <input
                           type="radio"
-                          name="selectedOption"
-                          checked={selectedOption === option}
+                          name="correctOption"
+                          checked={question.correctOption === option}
                           onChange={() => handleRadioChange(index)}
                         />
                       )}
@@ -361,8 +517,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
                       {quizType === "Q&A" && (
                         <input
                           type="radio"
-                          name="selectedOption"
-                          checked={selectedOption === option}
+                          name="correctOption"
+                          checked={question.correctOption === option}
                           onChange={() => handleRadioChange(index)}
                         />
                       )}
@@ -371,6 +527,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                         type="text"
                         placeholder="image URL"
                         name={`image_${index}`}
+                        value={option}
                         onChange={(e) => handleOptionChange(index, e)}
                       />
                     </React.Fragment>
@@ -380,8 +537,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
                       {quizType === "Q&A" && (
                         <input
                           type="radio"
-                          name="selectedOption"
-                          checked={selectedOption === option}
+                          name="correctOption"
+                          checked={question.correctOption === option}
                           onChange={() => handleRadioChange(index)}
                         />
                       )}
@@ -421,28 +578,28 @@ const QuizQuestions = ({ quizName, quizType }) => {
               <div>Timer</div>
               <button
                 className={`${styles.timerValue} ${
-                  clickedButton === 5 ? styles.clicked : ""
+                  timer === 5 ? styles.clicked : ""
                 }`}
                 onClick={() => handleTimerClick(5)}
-                disabled={localStorage.getItem("timer") !== null}
+                disabled={storedTimer !== 0}
               >
                 5 sec
               </button>
               <button
                 className={`${styles.timerValue} ${
-                  clickedButton === 10 ? styles.clicked : ""
+                  timer === 10 ? styles.clicked : ""
                 }`}
                 onClick={() => handleTimerClick(10)}
-                disabled={localStorage.getItem("timer") !== null}
+                disabled={storedTimer !== 0}
               >
                 10 sec
               </button>
               <button
                 className={`${styles.timerValue} ${
-                  clickedButton === 15 ? styles.clicked : ""
+                  timer === 15 ? styles.clicked : ""
                 }`}
                 onClick={() => handleTimerClick(15)}
-                disabled={localStorage.getItem("timer") !== null}
+                disabled={storedTimer !== 0}
               >
                 15 sec
               </button>
@@ -454,21 +611,16 @@ const QuizQuestions = ({ quizName, quizType }) => {
             </button>
           )}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className={styles.cancelButton}
-              onClick={() => handleCancel()}
-            >
+            <button className={styles.cancelButton} onClick={handleCancel}>
               Cancel
             </button>
-            <button
-              className={styles.createButton}
-              onClick={() => handleCreateQuiz()}
-            >
-              Create Quiz
+            <button className={styles.createButton} onClick={handleCreateQuiz}>
+              {state?.edit ? " Update Quiz " : " Create Quiz "}
             </button>
           </div>
         </div>
       )}
+      <ToastContainer autoClose={1500} />
     </div>
   );
 };
