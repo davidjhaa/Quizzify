@@ -9,160 +9,144 @@
 }
 
 .quizContainer {
-    width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
+  width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
 
-  .heading{
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    padding: 10px;
-    font-size: large;
-  }
-  
+.heading {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: large;
+}
+
+.question {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.option,
+.selectedOption {
+  background-color: #f0f0f0;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.selectedOption {
+  background-color: rgb(89, 219, 115);
+  border: none;
+}
+
+.imageOption,
+.selectedImageOption {
+  width: calc(100% - 5px);
+  height: 150px;
+  object-fit: cover;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.selectedImageOption {
+  border: 2px solid rgb(89, 219, 115);
+}
+
+.textImageContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  width: fit-content; 
+  border: 1px solid gainsboro;
+  cursor: pointer;
+}
+
+.textImageOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: none;
+  width: 70%; 
+}
+
+.textImageOption img {
+  max-width: 100%; 
+  height: auto;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.selectedTextImageOption {
+  border: 2px solid rgb(89, 219, 115);
+}
+
+
+.navigationButton {
+  margin-top: 20px;
+}
+
+.nextButton {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+@media (max-width: 768px) {
   .question {
-    font-size: 28px;
-    margin-bottom: 30px;
+    font-size: 20px;
   }
-  
+
   .options {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr;
   }
 
-  .option {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  
-  .selectedOption {
-    background-color: rgb(89, 219, 115); 
-    border: none;
-    border-radius: 5px;
-  }
-
-  .imageOption{
-    width: calc(100% - 5px);
-    height: 150px; 
-    object-fit: cover; 
-    border-radius: 5px;
-    margin: 5px; 
-    cursor: pointer;
-  }
-  
-  .selectedImageOption {
-    border: 2px solid rgb(89, 219, 115);
-  }
-
-  .textImageOption {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #e5e5e5;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 10px;
-    border: 1px solid #ccc;
-  }
-  
-  .textImageOption img {
+  .imageOption {
     width: 100%;
     height: auto;
-    border-radius: 5px;
-    margin-top: 10px;
-  }
-  
-  .selectedTextImageOption {
-    border: 2px solid rgb(89, 219, 115);
-  }
-  
-
-  .textImageOption{
-    border-radius: 5px;
-    background-color: #E5E5E5;
-  }
-
-  .navigationButton {
-    margin-top: 20px;
-  }
-  
-  .nextButton {
-    background-color: green;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
   }
 
   .textImageContainer {
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quizContainer {
+    width: 95%;
     padding: 10px;
   }
-  
-  .textImageContainer:hover {
-    border-color: rgb(183, 183, 223);
-  }
-  
-  .selectedTextImageOption {
-    border: 2px solid rgb(89, 219, 115);
-  }
-  
 
-  @media (max-width: 768px) {
-    .question {
-      font-size: 20px;
-    }
-  
-    .options {
-      grid-template-columns: 1fr;
-    }
-  
-    .imageOption {
-      width: 100%;
-      height: auto;
-    }
-  
-    .textImageContainer {
-      flex-direction: column;
-    }
+  .heading {
+    flex-direction: column;
+    font-size: medium;
   }
-  
-  @media (max-width: 480px) {
-    .quizContainer {
-      width: 95%;
-      padding: 10px;
-    }
-  
-    .heading {
-      flex-direction: column;
-      font-size: medium;
-    }
-  
-    .question {
-      font-size: 18px;
-    }
-  
-    .nextButton {
-      padding: 8px 16px;
-    }
+
+  .question {
+    font-size: 18px;
   }
+
+  .nextButton {
+    padding: 8px 16px;
+  }
+}

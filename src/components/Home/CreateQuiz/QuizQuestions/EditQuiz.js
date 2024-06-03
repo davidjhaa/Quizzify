@@ -342,24 +342,26 @@ const EditQuiz = ({ quizName }) => {
   };
 
   const handleQuestionClick = (index) => {
-    if (index < storedQuestions.length) {
-      if(storedQuestions.length !== activeIndex){
-        dispatch(updateQuestion({ question: question, index: activeIndex }));
-      }
-      setActiveIndex(index);
+    if (activeIndex < storedQuestions.length) {
+      dispatch(updateQuestion({ question, index: activeIndex }));
+    }
+
+    if(index < storedQuestions.length){
       setQuestion({
         questionText: storedQuestions[index].questionText,
         options: storedQuestions[index].options.map((opt) => opt.option),
         correctOption: storedQuestions[index].correctOption,
       });
-    } else if (index === storedQuestions.length) {
-      setActiveIndex(index);
+    } 
+    
+    else if (index === storedQuestions.length) {
       setQuestion({
         questionText: "",
         options: ["", ""],
         correctOption: "",
       });
     }
+    setActiveIndex(index);
   };
   
   const handleTimerClick = (value) => {

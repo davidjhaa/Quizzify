@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PollQuizAnalytics from "./QuizAnalytics/PollQuizAnalytics/PollQuizAnalytics";
 import QA_QuizAnalytics from "./QuizAnalytics/Q&A_QuizAnalyttics/Q&A_QuizAnalytics";
-import { useDispatch } from "react-redux";
-import { setQuestions } from "../../../redux/quizSlice";
 import axios from "axios";
 import styles from "./Analytics.module.css";
 import { MdDeleteOutline } from "react-icons/md";
@@ -16,14 +14,12 @@ const apiUrl = process.env.REACT_APP_Backend_URL;
 
 function Analytics() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [quizzes, setQuizzes] = useState([]);
   const [quiztype, setQuiztype] = useState(null);
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [quizToDelete, setQuizToDelete] = useState(null);
-  const [showQuizQuestions, setShowQuizQuestions] = useState(false); 
 
   const notify = () => {
     toast.success("Quiz Link Copied", {
@@ -88,12 +84,6 @@ function Analytics() {
     setQuizToDelete(null);
   };
 
-  const handleEditQuiz = (quiz) => {
-    setCurrentQuiz(quiz);
-    dispatch(setQuestions(quiz));
-    setShowQuizQuestions(true);
-  };
-
   useEffect(() => {
     getQuizzes();
   }, []);
@@ -139,16 +129,9 @@ function Analytics() {
           </div>
         </div>
       )}
-      {/* {showQuizQuestions ? (
-        <EditQuiz
-          quizName={currentQuiz.quizName}
-          quizType={currentQuiz.quizType}
-          currentQuiz={currentQuiz} 
-        />
-      ) : ( */}
       <div className={styles.analyticsContainer}>
         <div className={styles.title}>Analytics</div>
-        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <div style={{ display: "flex", justifyContent: "flex-start", gap:'100px', backgroundColor:'blue', borderRadius:'4px' }}>
           <span>S.No</span>
           <span>Quiz Name</span>
           <span>Created On</span>
@@ -202,7 +185,6 @@ function Analytics() {
             );
           })}
       </div>
-      {/* )} */}
       <ToastContainer autoClose={1000} />
     </div>
   );

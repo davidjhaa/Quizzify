@@ -19,13 +19,12 @@ import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 const apiUrl = process.env.REACT_APP_Backend_URL;
 
+
 const QuizQuestions = ({ quizName, quizType }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
-  
   const [stateData] = useState(state?.quiz);
-  console.log(stateData)
   const storedOptionType = useSelector((state) => state.quiz.optionType);
   const storedTimer = useSelector((state) => state.quiz.timer);
   const storedQuestions = useSelector((state) => state.quiz.questions);
@@ -104,7 +103,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
         return;
       }
     }
-    if (quizType !== "poll" && !question.correctOption) {
+    if (quizType !== "Poll" && !question.correctOption) {
       toast.error("Please select the correct option", {
         position: "top-right",
       });
@@ -126,7 +125,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
       questionNumber: storedQuestions.length + 1,
       questionText: question.questionText,
       options: optionsWithCount,
-      correctOption: quizType === "poll" ? null : question.correctOption,
+      correctOption: quizType === "Poll" ? null : question.correctOption,
     };
 
 
@@ -144,9 +143,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
 
   const handleOptionTypeSet = (type) => {
     setOptionTypeLocal(type);
-    if (!storedOptionType) {
-      dispatch(setOptionType(type));
-    }
   };
 
   const handleRemoveQuestion = (index) => {
@@ -232,91 +228,36 @@ const QuizQuestions = ({ quizName, quizType }) => {
   };
 
   const handleCreateQuiz = async () => {
-    if (question.questionText.trim() !== "" && question.options.length >= 2) {
-      for (let i = 0; i < question.options.length; i++) {
-        if (question.options[i].trim() === "") {
-          toast.error("Option cannot be empty", {
-            position: "top-right",
-          });
-          return;
-        }
-      }
-      if (quizType !== "poll" && !question.correctOption) {
-        toast.error("Please select the correct option", {
-          position: "top-right",
-        });
-        return;
-      }
-      if (storedOptionType === "") {
-        dispatch(setOptionType(optionType));
-      }
-      if (storedTimer === 0) {
-        dispatch(setTimer(timer));
-      }
-  
-      const optionsWithCount = question.options.map((option) => ({
-        option: option,
-        count: 0,
-      }));
-  
-      const newQuestion = {
-        questionNumber: storedQuestions.length + 1,
-        questionText: question.questionText,
-        options: optionsWithCount,
-        correctOption: quizType === "poll" ? null : question.correctOption,
-      };
-  
-      dispatch(addQuestion(newQuestion));
-  
-      setQuestion({
-        questionText: "",
-        options: ["", ""],
-        correctOption: "",
-      });
-  
-      setQuestionsLength(storedQuestions.length + 1);
+    if (question.questionText.trim() !== "") {
+      handleAddQuestion();
     }
   
-    const Questions = [...storedQuestions, {
-      questionNumber: storedQuestions.length + 1,
-      questionText: question.questionText,
-      options: question.options.map(option => ({
-        option: option,
-        count: 0,
-      })),
-      correctOption: quizType === "poll" ? null : question.correctOption,
-    }].map((question, index) => ({
-      ...question,
-      questionNumber: index + 1,
-    }));
-  
-    if (Questions.length === 0 || storedOptionType === "") {
+    if (storedQuestions.length === 0 || storedOptionType === "") {
       toast.error("At least one Question is required with options");
       return;
     }
+
+    const Questions = storedQuestions.map((question, index) => ({
+      questionNumber: index + 1,
+      questionText: question.questionText,
+      options: question.options,
+      correctOption: quizType === 'Poll' ? null : question.correctOption,
+    }));
+
+  //   console.log('Stored Questions:', storedQuestions);
+  // console.log('Formatted Questions:', Questions);
   
     const token = localStorage.getItem("token");
     axios.defaults.headers.common["Authorization"] = token;
   
     try {
-      let response;
-      if (state?.edit) {
-        response = await axios.patch(`${apiUrl}/quiz/updateQuiz/${state.quizId}`, {
-          Questions,
-          optionType: storedOptionType,
-          quizName,
-          quizType,
-          timer: storedTimer,
-        });
-      } else {
-        response = await axios.post(`${apiUrl}/quiz/createQuiz`, {
-          Questions,
-          optionType: storedOptionType,
-          quizName,
-          quizType,
-          timer: storedTimer,
-        });
-      }
+      const response = await axios.post(`${apiUrl}/quiz/createQuiz`, {
+        Questions,
+        optionType: storedOptionType,
+        quizName,
+        quizType,
+        timer: storedTimer,
+      });
   
       if (response.status === 201 || response.status === 200) {
         const message = state?.edit ? "Quiz Updated Successfully" : "Quiz Created Successfully";
@@ -325,7 +266,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
         });
   
         if (response.data.quizId) {
-          setQuizLink(`${window.location.origin}/quiz/${response.data.quizId}`);
+          const link = `${window.location.origin}/quiz/${response.data.quizId}`
+          setQuizLink(link);
           setQuizCreated(true);
         }
       }
@@ -342,28 +284,53 @@ const QuizQuestions = ({ quizName, quizType }) => {
     navigate("/dashboard");
   };
 
+  // const handleQuestionClick = (index) => {
+  //   if (index <= storedQuestions.length) {
+  //     if(storedQuestions.length !== activeIndex){
+  //       console.log(question)
+  //       console.log("idx ", activeIndex)
+  //       dispatch(updateQuestion({ question: question, index: activeIndex }));
+  //     }
+  //     setActiveIndex(index);
+  //     setQuestion({
+  //       questionText: storedQuestions[index].questionText,
+  //       options: storedQuestions[index].options.map((opt) => opt.option),
+  //       correctOption: storedQuestions[index].correctOption,
+  //     });
+  //   } 
+  //   else if (index === storedQuestions.length) {
+  //     setActiveIndex(index);
+  //     setQuestion({
+  //       questionText: "",
+  //       options: ["", ""],
+  //       correctOption: "",
+  //     });
+  //   }
+  // };
+  
   const handleQuestionClick = (index) => {
-    if (index < storedQuestions.length) {
-      if(storedQuestions.length !== activeIndex){
-        dispatch(updateQuestion({ question: question, index: activeIndex }));
-      }
-      setActiveIndex(index);
+    if (activeIndex < storedQuestions.length) {
+      dispatch(updateQuestion({ question, index: activeIndex }));
+    }
+
+    if(index < storedQuestions.length){
       setQuestion({
         questionText: storedQuestions[index].questionText,
         options: storedQuestions[index].options.map((opt) => opt.option),
         correctOption: storedQuestions[index].correctOption,
       });
-    } else if (index === storedQuestions.length) {
-      console.log("************************")
-      setActiveIndex(index);
+    } 
+    
+    else if (index === storedQuestions.length) {
       setQuestion({
         questionText: "",
         options: ["", ""],
         correctOption: "",
       });
     }
+    setActiveIndex(index);
   };
-  
+
   const handleTimerClick = (value) => {
     setTimerLocal(value);
   };
@@ -373,7 +340,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
       {quizCreated ? (
         <div className={styles.modalOverlay1}>
           <div className={styles.modalContent}>
-            <QuizLink quizLink={quizLink} />
+            <QuizLink quizLink={quizLink} quizType={quizName} />
           </div>
         </div>
       ) : (
@@ -384,7 +351,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
                 length: questionsLength > 0 ? questionsLength + 1 : 1,
               }).map((_, index) => (
                 <div key={index}  className={styles.questionItem}>
-                  {console.log('i', index, 'active index', activeIndex)}
                   <div
                     className={`${styles.questionCircle} ${activeIndex === index ? styles.active : ''}`}
                     onClick={() => handleQuestionClick(index)}
@@ -402,7 +368,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                   </div>
                 </div>
               ))}
-              {questionsLength <= 5 && (
+              {storedQuestions.length < 4 && (
                 <div
                   onClick={handleAddQuestion}
                   style={{

@@ -9,6 +9,7 @@ const QuizDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [quizType, setQuizType] = useState(null);
+  const [length, setLength] = useState(0);
   const [optionType, setOptionType] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -25,6 +26,7 @@ const QuizDetails = () => {
       setQuestions(quiz.questions);
       setOptionType(quiz.optionType);
       setQuizType(quiz.quizType);
+      setLength(quiz.questions.length)
       if (quiz.timer > 0) {
         setInitialTimer(quiz.timer);
         setTimer(quiz.timer);
@@ -63,8 +65,6 @@ const QuizDetails = () => {
     if (quizType === "Q&A" && correctOptions[currentQuestionIndex] === selectedOption) {
       scoreRef.current++;
     }
-    localStorage.setItem("result", scoreRef.current.toString());
-    localStorage.setItem("total", questions.length.toString());
 
     await axios.post(`${apiUrl}/quiz/${id}`, {
       qnumber: currentQuestionIndex,
@@ -73,7 +73,7 @@ const QuizDetails = () => {
 
     window.history.pushState(null, null, window.location.href);
     
-    navigate("/quiz/result");
+    navigate("/quiz/result", { state: { quizType, score: scoreRef.current, length } });
   };
 
   useEffect(() => {
@@ -98,7 +98,7 @@ const QuizDetails = () => {
 
   useEffect(() => {
     if (questions.length > 0 && currentQuestionIndex === questions.length) {
-      navigate("/quiz/result");
+      navigate("/quiz/result", { state: { quizType, score: scoreRef.current, length } });
     }
   }, [currentQuestionIndex, questions.length, navigate]);
 
@@ -163,7 +163,7 @@ const QuizDetails = () => {
                       <img
                         src={imageUrl}
                         alt="option"
-                        className={`${styles.imageOption} ${
+                        className={`${styles.textImageOption} ${
                           selectedOption === optionObject.option
                             ? styles.selectedTextImageOption
                             : ""

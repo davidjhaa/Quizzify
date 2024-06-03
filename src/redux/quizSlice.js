@@ -23,7 +23,13 @@ const quizSlice = createSlice({
     },
     updateQuestion(state, action) { 
       const { question, index } = action.payload;
-      state.questions[index] = question;
+      if (index < state.questions.length) {
+        state.questions[index] = {
+          questionText: question.questionText,
+          options: question.options.map((opt) => ({ option: opt, count: 0 })),
+          correctOption: question.correctOption,
+        };
+      }
     }, 
     setOptionType(state, action) {
       state.optionType = action.payload;
