@@ -338,11 +338,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
   return (
     <div className={styles.main}>
       {quizCreated ? (
-        <div className={styles.modalOverlay1}>
-          <div className={styles.modalContent}>
-            <QuizLink quizLink={quizLink} quizType={quizType} />
-          </div>
-        </div>
+        <QuizLink quizLink={quizLink} quizType={quizType} />
       ) : (
         <div className={styles.quizContainer}>
           <div className={styles.questionNav}>

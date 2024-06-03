@@ -131,7 +131,7 @@ function Analytics() {
       )}
       <div className={styles.analyticsContainer}>
         <div className={styles.title}>Analytics</div>
-        <div style={{ display: "flex", justifyContent: "flex-start", gap:'100px', backgroundColor:'blue', borderRadius:'4px' }}>
+        <div style={{ display: "flex", justifyContent: "flex-start", gap:'100px', backgroundColor:'blue', borderRadius:'4px', padding:'10px' }}>
           <span>S.No</span>
           <span>Quiz Name</span>
           <span>Created On</span>
