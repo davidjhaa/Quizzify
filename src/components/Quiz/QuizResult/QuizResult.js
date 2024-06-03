@@ -9,7 +9,7 @@ function QuizResult() {
   return (
     <div className={style.main}>
       <div className={style.parent}>
-        <h1>Congrats {state?.quizType} is completed</h1>
+        <h1>Congrats {state?.quizType === 'Q&A' ? 'Quiz' : 'Poll'} is completed</h1>
         <img src={victory} alt="logo" style={{ width: "250px" }} />
         {state?.quizType === 'Q&A' && (
           <h1>

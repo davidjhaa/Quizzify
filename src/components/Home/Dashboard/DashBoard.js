@@ -38,7 +38,7 @@ const MainContent = () => {
           </p>
           <p style={{ fontSize: "24px" }}>created</p>
         </div>
-        <div className={styles.stat} style={{ color: "rgb(26, 242, 98)" }}>
+        <div className={styles.stat} style={{ color: "rgb(38 233 103)" }}>
           <p>
             <span style={{ fontSize: "26px", marginRight: "10px" }}>
               {totalQuestion}
@@ -47,14 +47,14 @@ const MainContent = () => {
           </p>
           <p style={{ fontSize: "24px" }}>created</p>
         </div>
-        <div className={styles.stat} style={{ color: "rgb(26, 242, 98)" }}>
+        <div className={styles.stat} style={{ color: "blue" }}>
           <p>
             <span style={{ fontSize: "26px", marginRight: "10px" }}>
               {totalViews}
             </span>{" "}
-            Impression
+            Total
           </p>
-          <p style={{ fontSize: "24px" }}>created</p>
+          <p style={{ fontSize: "24px" }}>Impression</p>
         </div>
       </div>
       <div className={styles.trendingQuizzes}>

@@ -12,7 +12,6 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./QuizQuestions.module.css";
 import deleteIcon from "../../../../assets/delete.svg";
-import QuizLink from "../QuizLink/QuizLink";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaPlus } from "react-icons/fa";
@@ -24,6 +23,7 @@ const EditQuiz = ({ quizName }) => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [stateData] = useState(state?.quiz);
+  console.log(stateData);
   const storedOptionType = useSelector((state) => state.quiz.optionType);
   const storedTimer = useSelector((state) => state.quiz.timer);
   const storedQuestions = useSelector((state) => state.quiz.questions);
@@ -231,106 +231,42 @@ const EditQuiz = ({ quizName }) => {
   };
 
   const handleCreateQuiz = async () => {
-    if (question.questionText.trim() !== "" && question.options.length >= 2) {
-      for (let i = 0; i < question.options.length; i++) {
-        if (question.options[i].trim() === "") {
-          toast.error("Option cannot be empty", {
-            position: "top-right",
-          });
-          return;
-        }
-      }
-      if (quizType !== "poll" && !question.correctOption) {
-        toast.error("Please select the correct option", {
-          position: "top-right",
-        });
-        return;
-      }
-      if (storedOptionType === "") {
-        dispatch(setOptionType(optionType));
-      }
-      if (storedTimer === 0) {
-        dispatch(setTimer(timer));
-      }
-  
-      const optionsWithCount = question.options.map((option) => ({
-        option: option,
-        count: 0,
-      }));
-  
-      const newQuestion = {
-        questionNumber: storedQuestions.length + 1,
-        questionText: question.questionText,
-        options: optionsWithCount,
-        correctOption: quizType === "poll" ? null : question.correctOption,
-      };
-  
-      dispatch(addQuestion(newQuestion));
-  
-      setQuestion({
-        questionText: "",
-        options: ["", ""],
-        correctOption: "",
-      });
-  
-      setQuestionsLength(storedQuestions.length + 1);
+    if (question.questionText.trim() !== "") {
+      handleAddQuestion();
     }
   
-    const Questions = [...storedQuestions, {
-      questionNumber: storedQuestions.length + 1,
-      questionText: question.questionText,
-      options: question.options.map(option => ({
-        option: option,
-        count: 0,
-      })),
-      correctOption: quizType === "poll" ? null : question.correctOption,
-    }].map((question, index) => ({
-      ...question,
-      questionNumber: index + 1,
-    }));
-  
-    if (Questions.length === 0 || storedOptionType === "") {
+    if (storedQuestions.length === 0 || storedOptionType === "") {
       toast.error("At least one Question is required with options");
       return;
     }
+
+    const Questions = storedQuestions.map((question, index) => ({
+      questionNumber: index + 1,
+      questionText: question.questionText,
+      options: question.options,
+      correctOption: quizType === 'Poll' ? null : question.correctOption,
+    }));
   
     const token = localStorage.getItem("token");
     axios.defaults.headers.common["Authorization"] = token;
   
     try {
-      let response;
-      if (state?.edit) {
-        response = await axios.patch(`${apiUrl}/quiz/updateQuiz/${state.quizId}`, {
-          Questions,
-          optionType: storedOptionType,
-          quizName,
-          quizType,
-          timer: storedTimer,
-        });
-      } else {
-        response = await axios.post(`${apiUrl}/quiz/createQuiz`, {
-          Questions,
-          optionType: storedOptionType,
-          quizName,
-          quizType,
-          timer: storedTimer,
-        });
-      }
+      const response = await axios.patch(`${apiUrl}/quiz/updateQuiz`, {
+        quizId : stateData._id,
+        Questions,
+        timer: storedTimer,
+      });
   
       if (response.status === 201 || response.status === 200) {
         const message = state?.edit ? "Quiz Updated Successfully" : "Quiz Created Successfully";
         toast.success(message, {
           position: "top-right",
         });
-  
-        if (response.data.quizId) {
-          setQuizLink(`${window.location.origin}/quiz/${response.data.quizId}`);
-          setQuizCreated(true);
-        }
       }
-    } catch (error) {
-      console.error("Error creating/updating quiz:", error.message);
-      toast.error("Failed to create/update quiz", {
+    } 
+    catch (error) {
+      console.error("Error updating quiz:", error.message);
+      toast.error("Failed to update quiz", {
         position: "top-right",
       });
     }

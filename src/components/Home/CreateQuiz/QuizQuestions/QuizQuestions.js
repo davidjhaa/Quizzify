@@ -267,7 +267,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
   
         if (response.data.quizId) {
           const link = `${window.location.origin}/quiz/${response.data.quizId}`
-          setQuizLink(link);
+          setQuizLink(link); 
           setQuizCreated(true);
         }
       }
@@ -340,7 +340,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
       {quizCreated ? (
         <div className={styles.modalOverlay1}>
           <div className={styles.modalContent}>
-            <QuizLink quizLink={quizLink} quizType={quizName} />
+            <QuizLink quizLink={quizLink} quizType={quizType} />
           </div>
         </div>
       ) : (

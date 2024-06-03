@@ -12,7 +12,7 @@ function QuizLink({quizLink, quizType}) {
   }
   return (
       <div className={styles.parent}>
-        <h1>Congrats Your {quizType} is Published</h1>
+        <h1>Congrats! Your {quizType === 'Q&A' ? 'Quiz' : 'Poll'} is Published</h1>
         <button className={styles.link}>{quizLink}</button>
         <button className={styles.button} onClick={()=>handleShare()}>share</button>
         <ToastContainer autoClose={2000} />
