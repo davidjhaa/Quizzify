@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import QuizDetails from "./components/Quiz/Quiz/Quiz";
 import EditQuiz from "./components/Home/CreateQuiz/QuizQuestions/EditQuiz";
 import QuizResult from "./components/Quiz/QuizResult/QuizResult";
+import QuizLink from "./components/Home/CreateQuiz/QuizLink/QuizLink";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/createQuiz" element={<ProtectedRoute Component={HomePage} />}/>  
         <Route path="/quiz/:id" element={<QuizDetails />} />
         <Route path="/quiz/result" element={<QuizResult />} />
+        <Route path="/quiz/link" element={<QuizLink />} />
         <Route path="/quiz/updateQuiz" element={<ProtectedRoute Component={EditQuiz} />}/>
       </Routes>
     </BrowserRouter>

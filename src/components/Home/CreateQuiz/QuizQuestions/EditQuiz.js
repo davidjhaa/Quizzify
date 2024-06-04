@@ -39,8 +39,6 @@ const EditQuiz = ({ quizName }) => {
     storedQuestions.length || 0
   );
   const [timer, setTimerLocal] = useState(storedTimer || 0);
-  const [quizLink, setQuizLink] = useState("");
-  const [quizCreated, setQuizCreated] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
 
@@ -103,7 +101,7 @@ const EditQuiz = ({ quizName }) => {
         return;
       }
     }
-    if (quizType !== "poll" && !question.correctOption) {
+    if (quizType !== "Poll" && !question.correctOption) {
       toast.error("Please select the correct option", {
         position: "top-right",
       });
@@ -125,7 +123,7 @@ const EditQuiz = ({ quizName }) => {
       questionNumber: storedQuestions.length + 1,
       questionText: question.questionText,
       options: optionsWithCount,
-      correctOption: quizType === "poll" ? null : question.correctOption,
+      correctOption: quizType === "Poll" ? null : question.correctOption,
     };
 
 
@@ -332,7 +330,7 @@ const EditQuiz = ({ quizName }) => {
                     </div>
                   </div>
                 ))}
-                {questionsLength <= 5 && (
+                {questionsLength < 5 && (
                   <div
                     onClick={handleAddQuestion}
                     style={{

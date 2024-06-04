@@ -40,7 +40,6 @@ const QuizQuestions = ({ quizName, quizType }) => {
   );
   const [timer, setTimerLocal] = useState(storedTimer || 0);
   const [quizLink, setQuizLink] = useState("");
-  const [quizCreated, setQuizCreated] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
 
@@ -268,7 +267,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
         if (response.data.quizId) {
           const link = `${window.location.origin}/quiz/${response.data.quizId}`
           setQuizLink(link); 
-          setQuizCreated(true);
+          navigate('/quiz/link', { state: { quizLink : link, quizType } });
         }
       }
     } catch (error) {
@@ -337,250 +336,246 @@ const QuizQuestions = ({ quizName, quizType }) => {
 
   return (
     <div className={styles.main}>
-      {quizCreated ? (
-        <QuizLink quizLink={quizLink} quizType={quizType} />
-      ) : (
-        <div className={styles.quizContainer}>
-          <div className={styles.questionNav}>
-            <div className={styles.questionNumber}>
-              {Array.from({
-                length: questionsLength > 0 ? questionsLength + 1 : 1,
-              }).map((_, index) => (
-                <div key={index}  className={styles.questionItem}>
+      <div className={styles.quizContainer}>
+        <div className={styles.questionNav}>
+          <div className={styles.questionNumber}>
+            {Array.from({
+              length: questionsLength > 0 ? questionsLength + 1 : 1,
+            }).map((_, index) => (
+              <div key={index}  className={styles.questionItem}>
+                <div
+                  className={`${styles.questionCircle} ${activeIndex === index ? styles.active : ''}`}
+                  onClick={() => handleQuestionClick(index)}
+                >
+                  {index + 1}
                   <div
-                    className={`${styles.questionCircle} ${activeIndex === index ? styles.active : ''}`}
-                    onClick={() => handleQuestionClick(index)}
+                    className={styles.closeButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveQuestion(index);
+                    }}
                   >
-                    {index + 1}
-                    <div
-                      className={styles.closeButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveQuestion(index);
-                      }}
-                    >
-                      &#10006;
-                    </div>
+                    &#10006;
                   </div>
                 </div>
-              ))}
-              {storedQuestions.length < 4 && (
-                <div
-                  onClick={handleAddQuestion}
-                  style={{
-                    fontWeight: "bold",
-                    color: "#333",
-                    cursor: "pointer",
-                    marginLeft: "15px",
-                  }}
-                >
-                  <FaPlus style={{ color: "gray" }} />
-                </div>
-              )}
+              </div>
+            ))}
+            {storedQuestions.length < 4 && (
+              <div
+                onClick={handleAddQuestion}
+                style={{
+                  fontWeight: "bold",
+                  color: "#333",
+                  cursor: "pointer",
+                  marginLeft: "15px",
+                }}
+              >
+                <FaPlus style={{ color: "gray" }} />
+              </div>
+            )}
+          </div>
+          <span>Max 5 questions</span>
+        </div>
+        <div className={styles.question}>
+          <input
+            className={styles.quizType}
+            type="text"
+            placeholder={`${quizType} Question`}
+            value={question.questionText}
+            onChange={handleQuestionChange}
+          />
+        </div>
+        <div className={styles.optionType}>
+          <span>OptionType</span>
+          <div className={styles.radioButtons}>
+            <div
+              onClick={(e) => {
+                if (storedOptionType === "") {
+                  handleOptionTypeSet("Text");
+                } else {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <input
+                type="radio"
+                id="Text"
+                name="option"
+                checked={optionType === "Text"}
+                disabled={storedOptionType !== ""}
+              />
+              <label htmlFor="Text">Text</label>
             </div>
-            <span>Max 5 questions</span>
-          </div>
-          <div className={styles.question}>
-            <input
-              className={styles.quizType}
-              type="text"
-              placeholder={`${quizType} Question`}
-              value={question.questionText}
-              onChange={handleQuestionChange}
-            />
-          </div>
-          <div className={styles.optionType}>
-            <span>OptionType</span>
-            <div className={styles.radioButtons}>
-              <div
-                onClick={(e) => {
-                  if (storedOptionType === "") {
-                    handleOptionTypeSet("Text");
-                  } else {
-                    e.preventDefault();
-                  }
-                }}
-              >
-                <input
-                  type="radio"
-                  id="Text"
-                  name="option"
-                  checked={optionType === "Text"}
-                  disabled={storedOptionType !== ""}
-                />
-                <label htmlFor="Text">Text</label>
-              </div>
-              <div
-                onClick={(e) => {
-                  if (storedOptionType === "") {
-                    handleOptionTypeSet("Image");
-                  } else {
-                    e.preventDefault();
-                  }
-                }}
-              >
-                <input
-                  type="radio"
-                  id="Image"
-                  name="option"
-                  checked={optionType === "Image"}
-                  disabled={storedOptionType !== ""}
-                />
-                <label htmlFor="Image">Image</label>
-              </div>
+            <div
+              onClick={(e) => {
+                if (storedOptionType === "") {
+                  handleOptionTypeSet("Image");
+                } else {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <input
+                type="radio"
+                id="Image"
+                name="option"
+                checked={optionType === "Image"}
+                disabled={storedOptionType !== ""}
+              />
+              <label htmlFor="Image">Image</label>
+            </div>
 
-              <div
-                onClick={(e) => {
-                  if (storedOptionType === "") {
-                    handleOptionTypeSet("Text+Image");
-                  } else {
-                    e.preventDefault();
-                  }
-                }}
-              >
-                <input
-                  type="radio"
-                  id="Text+Image"
-                  name="option"
-                  checked={optionType === "Text+Image"}
-                  disabled={storedOptionType !== ""}
+            <div
+              onClick={(e) => {
+                if (storedOptionType === "") {
+                  handleOptionTypeSet("Text+Image");
+                } else {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <input
+                type="radio"
+                id="Text+Image"
+                name="option"
+                checked={optionType === "Text+Image"}
+                disabled={storedOptionType !== ""}
+              />
+              <label htmlFor="Text+Image">Text & Image</label>
+            </div>
+          </div>
+        </div>
+        <div className={styles.optionsContainer}>
+          <div className={styles.optionsParent}>
+            {question.options.map((option, index) => (
+              <div key={index} className={styles.options}>
+                {optionType === "Text" && (
+                  <React.Fragment>
+                    {quizType === "Q&A" && (
+                      <input
+                        type="radio"
+                        name="correctOption"
+                        checked={question.correctOption === option}
+                        onChange={() => handleRadioChange(index)}
+                      />
+                    )}
+                    <input
+                      className={styles.option}
+                      type="text"
+                      placeholder="Text"
+                      name={`text_${index}`}
+                      value={option}
+                      onChange={(e) => handleOptionChange(index, e)}
+                    />
+                  </React.Fragment>
+                )}
+                {optionType === "Image" && (
+                  <React.Fragment>
+                    {quizType === "Q&A" && (
+                      <input
+                        type="radio"
+                        name="correctOption"
+                        checked={question.correctOption === option}
+                        onChange={() => handleRadioChange(index)}
+                      />
+                    )}
+                    <input
+                      className={styles.option}
+                      type="text"
+                      placeholder="image URL"
+                      name={`image_${index}`}
+                      value={option}
+                      onChange={(e) => handleOptionChange(index, e)}
+                    />
+                  </React.Fragment>
+                )}
+                {optionType === "Text+Image" && (
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {quizType === "Q&A" && (
+                      <input
+                        type="radio"
+                        name="correctOption"
+                        checked={question.correctOption === option}
+                        onChange={() => handleRadioChange(index)}
+                      />
+                    )}
+                    <input
+                      style={{ marginRight: "10px" }}
+                      className={styles.option}
+                      type="text"
+                      placeholder="Text"
+                      name={`text_${index}`}
+                      value={option.split("davidjhaa")[0] || ""}
+                      onChange={(e) =>
+                        handleOptionChange2(index, e, "davidjhaa")
+                      }
+                    />
+                    <input
+                      className={styles.option}
+                      type="text"
+                      placeholder="Image URL"
+                      name={`image_${index}`}
+                      value={option.split("davidjhaa")[1] || ""}
+                      onChange={(e) =>
+                        handleOptionChange2(index, e, "davidjhaa")
+                      }
+                    />
+                  </div>
+                )}
+                <img
+                  src={deleteIcon}
+                  alt="Delete option"
+                  className={styles.deleteIcon}
+                  onClick={() => handleDeleteOption(index)}
                 />
-                <label htmlFor="Text+Image">Text & Image</label>
               </div>
-            </div>
+            ))}
           </div>
-          <div className={styles.optionsContainer}>
-            <div className={styles.optionsParent}>
-              {question.options.map((option, index) => (
-                <div key={index} className={styles.options}>
-                  {optionType === "Text" && (
-                    <React.Fragment>
-                      {quizType === "Q&A" && (
-                        <input
-                          type="radio"
-                          name="correctOption"
-                          checked={question.correctOption === option}
-                          onChange={() => handleRadioChange(index)}
-                        />
-                      )}
-                      <input
-                        className={styles.option}
-                        type="text"
-                        placeholder="Text"
-                        name={`text_${index}`}
-                        value={option}
-                        onChange={(e) => handleOptionChange(index, e)}
-                      />
-                    </React.Fragment>
-                  )}
-                  {optionType === "Image" && (
-                    <React.Fragment>
-                      {quizType === "Q&A" && (
-                        <input
-                          type="radio"
-                          name="correctOption"
-                          checked={question.correctOption === option}
-                          onChange={() => handleRadioChange(index)}
-                        />
-                      )}
-                      <input
-                        className={styles.option}
-                        type="text"
-                        placeholder="image URL"
-                        name={`image_${index}`}
-                        value={option}
-                        onChange={(e) => handleOptionChange(index, e)}
-                      />
-                    </React.Fragment>
-                  )}
-                  {optionType === "Text+Image" && (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      {quizType === "Q&A" && (
-                        <input
-                          type="radio"
-                          name="correctOption"
-                          checked={question.correctOption === option}
-                          onChange={() => handleRadioChange(index)}
-                        />
-                      )}
-                      <input
-                        style={{ marginRight: "10px" }}
-                        className={styles.option}
-                        type="text"
-                        placeholder="Text"
-                        name={`text_${index}`}
-                        value={option.split("davidjhaa")[0] || ""}
-                        onChange={(e) =>
-                          handleOptionChange2(index, e, "davidjhaa")
-                        }
-                      />
-                      <input
-                        className={styles.option}
-                        type="text"
-                        placeholder="Image URL"
-                        name={`image_${index}`}
-                        value={option.split("davidjhaa")[1] || ""}
-                        onChange={(e) =>
-                          handleOptionChange2(index, e, "davidjhaa")
-                        }
-                      />
-                    </div>
-                  )}
-                  <img
-                    src={deleteIcon}
-                    alt="Delete option"
-                    className={styles.deleteIcon}
-                    onClick={() => handleDeleteOption(index)}
-                  />
-                </div>
-              ))}
-            </div>
-            <div className={styles.timer}>
-              <div>Timer</div>
-              <button
-                className={`${styles.timerValue} ${
-                  timer === 5 ? styles.clicked : ""
-                }`}
-                onClick={() => handleTimerClick(5)}
-                disabled={storedTimer !== 0}
-              >
-                5 sec
-              </button>
-              <button
-                className={`${styles.timerValue} ${
-                  timer === 10 ? styles.clicked : ""
-                }`}
-                onClick={() => handleTimerClick(10)}
-                disabled={storedTimer !== 0}
-              >
-                10 sec
-              </button>
-              <button
-                className={`${styles.timerValue} ${
-                  timer === 15 ? styles.clicked : ""
-                }`}
-                onClick={() => handleTimerClick(15)}
-                disabled={storedTimer !== 0}
-              >
-                15 sec
-              </button>
-            </div>
-          </div>
-          {question.options.length < 4 && (
-            <button onClick={handleAddOption} className={styles.addOption}>
-              Add Option
+          <div className={styles.timer}>
+            <div>Timer</div>
+            <button
+              className={`${styles.timerValue} ${
+                timer === 5 ? styles.clicked : ""
+              }`}
+              onClick={() => handleTimerClick(5)}
+              disabled={storedTimer !== 0}
+            >
+              5 sec
             </button>
-          )}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button className={styles.cancelButton} onClick={handleCancel}>
-              Cancel
+            <button
+              className={`${styles.timerValue} ${
+                timer === 10 ? styles.clicked : ""
+              }`}
+              onClick={() => handleTimerClick(10)}
+              disabled={storedTimer !== 0}
+            >
+              10 sec
             </button>
-            <button className={styles.createButton} onClick={handleCreateQuiz}>
-              {state?.edit ? " Update Quiz " : " Create Quiz "}
+            <button
+              className={`${styles.timerValue} ${
+                timer === 15 ? styles.clicked : ""
+              }`}
+              onClick={() => handleTimerClick(15)}
+              disabled={storedTimer !== 0}
+            >
+              15 sec
             </button>
           </div>
         </div>
-      )}
+        {question.options.length < 4 && (
+          <button onClick={handleAddOption} className={styles.addOption}>
+            Add Option
+          </button>
+        )}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <button className={styles.cancelButton} onClick={handleCancel}>
+            Cancel
+          </button>
+          <button className={styles.createButton} onClick={handleCreateQuiz}>
+            {state?.edit ? " Update Quiz " : " Create Quiz "}
+          </button>
+        </div>
+      </div>
       <ToastContainer autoClose={1500} />
     </div>
   );

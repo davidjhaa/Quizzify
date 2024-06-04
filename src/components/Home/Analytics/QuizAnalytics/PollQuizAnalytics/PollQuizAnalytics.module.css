@@ -1,5 +1,5 @@
 .main{
-    background-color: gainsboro;
+    background-color: white;
     width: 60vw;
     border-radius: 10px;
     padding: 10px 10px 10px 20px;
@@ -9,7 +9,14 @@
 .option{
     border: 1px solid gray;
     margin: 10px;
-    padding: 12px;
+    /* padding: 12px; */
     text-align: center;
     border-radius: 4px;
+    width: 20%;
 }
+
+
+  
+  .option div {
+    line-height: 1.5; 
+  }
