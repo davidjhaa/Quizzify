@@ -112,7 +112,7 @@ function SignUp() {
               ></input>
             </div>
 
-            <div className={styles.field}>
+            <div className={`${styles.field} ${styles.confirmPassword}`}>
               <label className={styles.label}>Confirm Password</label>
               <input
                   style={{ color: formData.confirmPassword === "Password doesn't match" ? "red" : null }}
