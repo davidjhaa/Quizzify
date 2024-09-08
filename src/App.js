@@ -13,12 +13,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SignUpPage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/signUp" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<ProtectedRoute Component= {HomePage} />} /> 
-        <Route path="/analytics" element={<ProtectedRoute Component={HomePage} />}/>  
-        <Route path="/createQuiz" element={<ProtectedRoute Component={HomePage} />}/>  
+        <Route path="/dashboard" element={<HomePage />} /> 
+        <Route path="/analytics" element={<HomePage />}/>  
+        <Route path="/createQuiz" element={<HomePage />}/>  
         <Route path="/quiz/:id" element={<QuizDetails />} />
         <Route path="/quiz/result" element={<QuizResult />} />
         <Route path="/quiz/link" element={<QuizLink />} />

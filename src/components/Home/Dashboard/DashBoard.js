@@ -30,30 +30,30 @@ const MainContent = () => {
     <div className={styles.mainContent}>
       <div className={styles.stats}>
         <div className={styles.stat} style={{ color: "orange" }}>
-          <p>
-            <span style={{ fontSize: "26px", marginRight: "14px" }}>
+          <div>
+            <span style={{ fontSize: "34px", marginRight: "14px" }}>
               {totalQuiz}
             </span>{" "}
             Quiz
-          </p>
+          </div>
           <p style={{ fontSize: "24px" }}>created</p>
         </div>
         <div className={styles.stat} style={{ color: "rgb(38 233 103)" }}>
-          <p>
-            <span style={{ fontSize: "26px", marginRight: "10px" }}>
+          <div>
+            <span style={{ fontSize: "34px", marginRight: "14px" }}>
               {totalQuestion}
             </span>{" "}
             Questions
-          </p>
+          </div>
           <p style={{ fontSize: "24px" }}>created</p>
         </div>
         <div className={styles.stat} style={{ color: "blue" }}>
-          <p>
-            <span style={{ fontSize: "26px", marginRight: "10px" }}>
+          <div>
+            <span style={{ fontSize: "34px", marginRight: "14px" }}>
               {totalViews}
             </span>{" "}
             Total
-          </p>
+          </div>
           <p style={{ fontSize: "24px" }}>Impression</p>
         </div>
       </div>

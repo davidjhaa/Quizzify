@@ -1,4 +1,5 @@
 import styles from "./Sidebar.module.css";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { selectComponent, setComponent } from "../../../redux/componentSlice";
@@ -7,6 +8,12 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const activeComponent = useSelector(selectComponent);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setIsLoggedIn(!!userId);
+  }, []);
 
   const handleButtonClick = (buttonName) => {
     dispatch(setComponent(buttonName));
@@ -47,7 +54,10 @@ const Sidebar = () => {
           Create Quiz
         </button>
       </div>
-      <button className={styles.logout} onClick={handleLogout}>LOGOUT</button>
+      {/* <button className={styles.logout} onClick={handleLogout}>LOGOUT</button> */}
+      <button className={styles.logout} onClick={handleLogout}>
+          <span>{isLoggedIn ? "Logout" : "Login"}</span>
+        </button>
     </div>
   );
 };

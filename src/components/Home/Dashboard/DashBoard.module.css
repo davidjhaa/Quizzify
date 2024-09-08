@@ -29,13 +29,16 @@
   font-weight: 800;
 }
 
-.stat p {
+.stat div {
   margin: 0; 
   padding: 0; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .stat p + p {
-  margin-top: 22px; 
+  margin-top: 8px; 
 }
 
 .trendingQuizzes {
