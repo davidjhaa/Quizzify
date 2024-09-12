@@ -12,7 +12,9 @@
 }
 
 .title {
-  font-size: 24px;
+  /* font-size: 24px; */
+  font-weight: 800;
+  font-family: cursive;
   margin-bottom: 20px;
 }
 
@@ -50,12 +52,13 @@
 
 .logout {
   width: 100%;
-  height: 32px;
+  height: 40px;
   margin-top: 20px;
   cursor: pointer;
   background-color: #ccdbef;
   border-radius: 5px;
   border:none;
   font-weight: 600;
-  font-size: large;
+  font-size: 28px;
+  font: cursive;
 }
