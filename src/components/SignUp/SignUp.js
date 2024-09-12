@@ -12,7 +12,6 @@ function SignUp() {
       name: "",
       email: "",
       password: "",
-      confirmPassword: "",
   });
 
   const notify = () => {
@@ -39,14 +38,6 @@ function SignUp() {
       if (formData.password.trim() === "") {
         setFormData(prevState => ({ ...prevState, password: "weak Password" }));
         flag = false;
-      }
-      if (formData.confirmPassword.trim() === "") {
-          setFormData(prevState => ({ ...prevState, confirmPassword: "Password doesn't match" }));
-        flag = false;
-      }
-      console.log(formData);
-      if(formData.password !== formData.confirmPassword){
-        return;
       }
 
       if(!flag){
@@ -111,19 +102,6 @@ function SignUp() {
                   type={"text"}
               ></input>
             </div>
-
-            <div className={`${styles.field} ${styles.confirmPassword}`}>
-              <label className={styles.label}>Confirm Password</label>
-              <input
-                  style={{ color: formData.confirmPassword === "Password doesn't match" ? "red" : null }}
-                  className={styles.input}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  type={"text"}
-              ></input>
-            </div>
-
             <button onClick={handleSubmit} className={styles.button}>
                 SignUp
             </button>

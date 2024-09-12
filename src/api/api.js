@@ -1,13 +1,12 @@
 import axios from "axios";
 const backendUrl = `${process.env.REACT_APP_Backend_URL}/user`;
 
-export const registerAdmin = async ({ email, password, mobile, name }) => {
+export const registerAdmin = async ({ email, password, name }) => {
     try {
         const reqUrl = `${backendUrl}/signUp`;
         const response = await axios.post(reqUrl, {
             name,
             password,
-            mobile,
             email,
         });
         return response;

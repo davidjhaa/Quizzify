@@ -4,7 +4,7 @@ import styles from "./QuizForm.module.css";
 import QuizQuestions from "../../CreateQuiz/QuizQuestions/QuizQuestions";
 import { useDispatch } from "react-redux";
 import { setComponent } from "../../../../redux/componentSlice";
-import {resetQuiz} from "../../../../redux/quizSlice";
+import { resetQuiz } from "../../../../redux/quizSlice";
 
 const QuizForm = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const QuizForm = () => {
   const [showQuizCreator, setShowQuizCreator] = useState(false);
 
   dispatch(resetQuiz())
-  
+
   const handleQuizNameChange = (e) => {
     setQuizName(e.target.value);
   };
@@ -43,7 +43,7 @@ const QuizForm = () => {
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className={styles.formStyle}>
+        <form onSubmit={handleSubmit} className={styles.formStyle} aria-label="quiz form">
           <div className={styles.question}>
             <input
               type="text"
@@ -52,29 +52,24 @@ const QuizForm = () => {
               className={styles.quizName}
               placeholder="Quiz name"
               required
+              aria-label="quiz name input"
             />
           </div>
           <div className={styles.quizType}>
-            <span style={{ fontSize: "22px" }}>Quiz Type</span>
+            <span>Quiz Type</span>
             <button
               type="button"
               onClick={() => handleQuizTypeChange("Q&A")}
-              className={
-                quizType === "Q&A"
-                  ? styles.activeButtonStyle
-                  : styles.buttonStyle
-              }
+              className={quizType === "Q&A" ? styles.activeButtonStyle : styles.buttonStyle}
+              aria-pressed={quizType === "Q&A"}
             >
               Q & A
             </button>
             <button
               type="button"
               onClick={() => handleQuizTypeChange("Poll")}
-              className={
-                quizType === "Poll"
-                  ? styles.activeButtonStyle
-                  : styles.buttonStyle
-              }
+              className={quizType === "Poll" ? styles.activeButtonStyle : styles.buttonStyle}
+              aria-pressed={quizType === "Poll"}
             >
               Poll
             </button>
@@ -95,7 +90,8 @@ const QuizForm = () => {
             </button>
           </div>
         </form>
-     )}
+
+      )}
     </div>
   );
 };

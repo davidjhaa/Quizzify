@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #fff;
+    background-color: #6e6c6c;
     margin: 0;
     padding: 0;
 }
@@ -19,6 +19,7 @@
 .main {
     background-color: white;
     width: 60vw;
+    max-width: 700px;
     /* height: 80vh; */
     display: flex;
     flex-direction: column;
