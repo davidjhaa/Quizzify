@@ -43,13 +43,14 @@ const QuizForm = () => {
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className={styles.formStyle} aria-label="quiz form">
-          <div className={styles.question}>
+      <div className={styles.overlay}>
+        <form onSubmit={handleSubmit} className={styles.formStyle}>
+          <div className={styles.quizname}>
             <input
               type="text"
               value={quizName}
               onChange={handleQuizNameChange}
-              className={styles.quizName}
+              className={styles.quizNameInput}
               placeholder="Quiz name"
               required
               aria-label="quiz name input"
@@ -90,7 +91,7 @@ const QuizForm = () => {
             </button>
           </div>
         </form>
-
+      </div>
       )}
     </div>
   );
