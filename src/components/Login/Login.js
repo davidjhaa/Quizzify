@@ -55,6 +55,21 @@ function Login() {
       notify2();
       return;
   };
+
+  const guestLogin = async (event) => {
+    const result = await loginAdmin({email:'davidjhaa4u@gmail.com', password:'00000000'});
+    if(result){
+      notify();
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
+      return;
+    }
+
+    notify2();
+    return;
+};
+
     
   return (
     <div className={styles.app}>
@@ -89,11 +104,14 @@ function Login() {
                   type={"text"}
               ></input>
             </div>
-
-            <button onClick={handleSubmit} className={styles.button}>
-                Login
+            <div>
+              <button onClick={handleSubmit} className={styles.button}>
+                  Login
+              </button>
+              <button onClick={guestLogin} className={styles.button}>
+                Guest Login
             </button>
-
+            </div>
           </div>
         </div>
         <ToastContainer autoClose={1000}/>
