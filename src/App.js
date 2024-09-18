@@ -16,7 +16,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/signUp" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<HomePage />} /> 
+        <Route path="/dashboard" element={<ProtectedRoute Component={HomePage} />} /> 
         <Route path="/analytics" element={<HomePage />}/>  
         <Route path="/createQuiz" element={<HomePage />}/>  
         <Route path="/quiz/:id" element={<QuizDetails />} />
