@@ -69,7 +69,7 @@ const Signup = () => {
           <div className={styles.welcomeNote}>
             <h2 className={styles.title}>Join Us Today!</h2>
             <p className={styles.description}>
-              Sign up now and start your journey to limitless learning opportunities!
+              Sign up now and Experience seamless way of creating Quiz and share among folks
             </p>
             <button className={styles.signInbutton} onClick={() => navigate("/login")}>
               Log In
