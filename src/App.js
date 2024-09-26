@@ -24,7 +24,6 @@ function App() {
         <Route path="/quiz/link" element={<QuizLink />} />
         <Route path="/quiz/updateQuiz" element={<ProtectedRoute Component={EditQuiz} />}/>
 
-        {/* Wildcard route for undefined paths */}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </BrowserRouter>
