@@ -28,10 +28,6 @@ const Login = () => {
     toast.error('Invalid Credentials!', { position: 'top-right' });
   };
 
-  const loginwithgoogle = () => {
-    window.open("http://localhost:8000/auth/google/callback", "_self")
-  }
-
   const validationSchema = Yup.object({
     email: Yup.string()
       .required("Please Enter your Email")
@@ -103,7 +99,7 @@ const Login = () => {
           <div className={styles.content}>
             <h2 className={styles.title}>Log In</h2>
             <div className={styles.form__icons}>
-              <FcGoogle onClick={() => loginwithgoogle()} className={styles.formIcon} alt="icon1" />
+              <FcGoogle className={styles.formIcon} alt="icon1" />
               <FaFacebook className={styles.formIcon2} alt="icon2" />
               <IoLogoTwitter className={styles.formIcon3} alt="icon3" />
             </div>

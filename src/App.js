@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import SignUpPage from "./pages/SignupPage/SignUpPage";
 import LoginPage from "./pages/Loginpage/LoginPage";
 import HomePage from "./pages/HomePage/HomePage";
@@ -23,6 +23,9 @@ function App() {
         <Route path="/quiz/result" element={<QuizResult />} />
         <Route path="/quiz/link" element={<QuizLink />} />
         <Route path="/quiz/updateQuiz" element={<ProtectedRoute Component={EditQuiz} />}/>
+
+        {/* Wildcard route for undefined paths */}
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </BrowserRouter>
   );
