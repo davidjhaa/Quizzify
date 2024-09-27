@@ -24,6 +24,7 @@ const QuizForm = () => {
   };
 
   const handleSubmit = (e) => {
+    // console.log(quizName, quizType)
     e.preventDefault();
     setShowQuizCreator(true);
   };
@@ -37,11 +38,7 @@ const QuizForm = () => {
   return (
     <div className="styles.main">
       {showQuizCreator ? (
-        <div className={styles.modalOverlay1}>
-          <div className={styles.modalContent}>
-            <QuizQuestions quizName={quizName} quizType={quizType} />
-          </div>
-        </div>
+        <QuizQuestions quizName={quizName} quizType={quizType} />   
       ) : (
       <div className={styles.overlay}>
         <form onSubmit={handleSubmit} className={styles.formStyle}>
@@ -53,7 +50,6 @@ const QuizForm = () => {
               className={styles.quizNameInput}
               placeholder="Quiz name"
               required
-              aria-label="quiz name input"
             />
           </div>
           <div className={styles.quizType}>
@@ -70,7 +66,6 @@ const QuizForm = () => {
               type="button"
               onClick={() => handleQuizTypeChange("Poll")}
               className={quizType === "Poll" ? styles.activeButtonStyle : styles.buttonStyle}
-              aria-pressed={quizType === "Poll"}
             >
               Poll
             </button>

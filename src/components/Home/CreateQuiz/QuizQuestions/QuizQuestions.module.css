@@ -16,7 +16,7 @@
   transform: translate(-50%, -50%);
   background-color: rgb(255, 255, 255);
   border-radius: 15px;
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
 }
 
 .quizContainer {
@@ -32,13 +32,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 10px 20px;
 }
 
 .questionNumber {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
   gap: 8px;
 }
 
@@ -67,7 +66,7 @@
   cursor: pointer;
 }
 
-.active {
+.activeQuestion {
   background-color: #b9b7b7;
 }
 
@@ -85,7 +84,7 @@
   cursor: pointer;
 }
 
-.quizType {
+.questionText {
   width: 100%;
   height: 30px;
   margin-bottom: 16px;
@@ -93,6 +92,8 @@
   border: none;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(43, 42, 42, 0.3);
+  outline: none;
+  font-size: 18px;
 }
 
 .question {
@@ -142,6 +143,10 @@ input[type="radio"] {
   border: none;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(43, 42, 42, 0.3);
+}
+
+.correctOption {
+  background-color: #0cdf47; 
 }
 
 .deleteIcon {
@@ -201,7 +206,7 @@ button {
   padding: 0.5rem 2.5rem;
   border-radius: 10px;
   border: none;
-  background-color: #44d86e;
+  background-color: #0cdf47;
   cursor: pointer;
   outline: none;
 }

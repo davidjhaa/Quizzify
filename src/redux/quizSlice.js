@@ -2,8 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   questions: [],
-  optionType: "",
-  timer: 0,
 };
 
 const quizSlice = createSlice({
@@ -11,33 +9,49 @@ const quizSlice = createSlice({
   initialState,
   reducers: {
     setQuestions(state, action) {
-      state.questions = action.payload;
+      state.questions = action.payload.map((question, index) => ({
+        index,
+        questionText: question.questionText,
+        options: question.options,
+        correctOption: question.correctOption,
+        timer: question.timer || 0,
+        optionType: question.optionType || "",
+      }));
     },
     addQuestion(state, action) {
-      state.questions.push(action.payload);
+      const newQuestion = {
+        index: state.questions.length, 
+        questionText: action.payload.questionText,
+        options: action.payload.options,
+        correctOption: action.payload.correctOption,
+        timer: action.payload.timer || 0,
+        optionType: action.payload.optionType || "",
+      };
+      state.questions.push(newQuestion);
     },
     removeQuestion(state, action) {
       state.questions = state.questions.filter(
         (_, index) => index !== action.payload
       );
+      // Recalculate the index of each question after removal
+      state.questions.forEach((question, index) => {
+        question.index = index;
+      });
     },
-    updateQuestion(state, action) { 
+    updateQuestion(state, action) {
       const { question, index } = action.payload;
       if (index < state.questions.length) {
         state.questions[index] = {
+          ...state.questions[index], // Keep existing question structure
           questionText: question.questionText,
-          options: question.options.map((opt) => ({ option: opt, count: 0 })),
+          options: question.options,
           correctOption: question.correctOption,
+          timer: question.timer,
+          optionType: question.optionType,
         };
       }
-    }, 
-    setOptionType(state, action) {
-      state.optionType = action.payload;
     },
-    setTimer(state, action) {
-      state.timer = action.payload;
-    },
-    resetQuiz(state) {  
+    resetQuiz(state) {
       return initialState;
     },
   },
@@ -48,10 +62,7 @@ export const {
   addQuestion,
   removeQuestion,
   updateQuestion,
-  setOptionType,
-  setTimer,
   resetQuiz,
 } = quizSlice.actions;
-
 
 export default quizSlice.reducer;

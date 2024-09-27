@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from './Q&A_Analytics.module.css'
 import { ImCross } from "react-icons/im";
 
-function QA_QuizAnalytics({ quiz, onClose }) {
+function QAQuizAnalytics({ quiz, onClose }) {
   const [totalAttempted, setTotalAttempted] = useState(0);
   const [correctAnswered, setCorrectAnswered] = useState(0);
   const [wrongAnswered, setWrongAnswered] = useState(0);
@@ -67,4 +67,4 @@ function QA_QuizAnalytics({ quiz, onClose }) {
   );
 }
 
-export default QA_QuizAnalytics;
+export default QAQuizAnalytics;

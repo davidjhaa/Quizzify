@@ -25,16 +25,18 @@
   
 .analyticsContainer {
   background-color: #f2f2f2;
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 38px;
+  font-weight: 700;
   margin-bottom: 20px;
   text-align: center;
+  color: gray;
+  font-family: cursive;
 }
   
 .quizItem {
@@ -42,7 +44,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 10px 31px;
 }
 
 .quizItem span {
