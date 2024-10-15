@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PollQuizAnalytics from "./QuizAnalytics/PollQuizAnalytics/PollQuizAnalytics";
-import QA_QuizAnalytics from "./QuizAnalytics/Q&A_QuizAnalyttics/Q&A_QuizAnalytics";
+import QAQuizAnalytics from "./QuizAnalytics/Q&A_QuizAnalyttics/Q&A_QuizAnalytics";
 import axios from "axios";
 import styles from "./Analytics.module.css";
 import { MdDeleteOutline } from "react-icons/md";
@@ -9,6 +9,7 @@ import { HiShare } from "react-icons/hi";
 import { FaRegEdit } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditQuiz from "../CreateQuiz/QuizQuestions/EditQuiz"
 const apiUrl = process.env.REACT_APP_Backend_URL;
 
 
@@ -19,6 +20,7 @@ function Analytics() {
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [quizToDelete, setQuizToDelete] = useState(null);
 
   const notify = () => {
@@ -197,3 +199,7 @@ function Analytics() {
 }
 
 export default Analytics;
+
+
+
+
