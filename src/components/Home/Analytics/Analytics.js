@@ -84,6 +84,11 @@ function Analytics() {
     setQuizToDelete(null);
   };
 
+  const handleEditQuiz = (quiz) => {
+    setCurrentQuiz(quiz);
+    setShowEdit(true);
+  }
+
   useEffect(() => {
     getQuizzes();
   }, []);
@@ -99,7 +104,7 @@ function Analytics() {
             />
           )}
           {quiztype === "Q&A" && (
-            <QA_QuizAnalytics quiz={currentQuiz} onClose={handleCloseOverlay} />
+            <QAQuizAnalytics quiz={currentQuiz} onClose={handleCloseOverlay} />
           )}
         </div>
       )}
@@ -107,18 +112,18 @@ function Analytics() {
         <div className={styles.deleteConfirmation}>
           <div className={styles.confirmationBox}>
             <p style={{ marginBottom: "20px", fontSize: "32px" }}>
-              Are you confirm you want to delete ?
+              Are you confirm, you want to delete ?
             </p>
             <button
               onClick={confirmDelete}
-              style={{ backgroundColor: "red", color: "white", width:'150px' }}
+              style={{ backgroundColor: "red", color: "white", width: '150px' }}
             >
               Confirm Delete
             </button>
             <button
               onClick={cancelDelete}
               style={{
-                width:'150px',
+                width: '150px',
                 backgroundColor: "white",
                 color: "black",
                 boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.4)",
@@ -129,14 +134,12 @@ function Analytics() {
           </div>
         </div>
       )}
+      {showEdit && (
+        <EditQuiz quiz={currentQuiz} quizType={quiztype} setShowEdit={setShowEdit}/>
+      )}
       <div className={styles.analyticsContainer}>
         <div className={styles.title}>Analytics</div>
-        <div style={{ display: "flex", justifyContent: "flex-start", gap:'100px', backgroundColor:'blue', borderRadius:'4px', padding:'10px' }}>
-          <span>S.No</span>
-          <span>Quiz Name</span>
-          <span>Created On</span>
-          <span>Impression</span>
-        </div>
+
         {quizzes.length > 0 &&
           quizzes.map((quiz, index) => {
             const dateObj = new Date(quiz.createdAt);
@@ -153,34 +156,37 @@ function Analytics() {
                 className={styles.quizItem}
                 style={{ backgroundColor }}
               >
-                <span>{index + 1}</span>
-                <span>{quiz.quizName}</span>
-                <span>{formattedDate}</span>
-                <span>{quiz.totalViews}</span>
-                <div style={{ display: "flex", gap: "4px" }}>
-                  <FaRegEdit
-                    style={{ color: "blue", cursor: "pointer" }}
-                    onClick={() => {
-                      navigate("/quiz/updateQuiz", {
-                        state: {
-                          quiz: quiz,
-                          edit: true,
-                        },
-                      });
-                    }}
-                  />
-                  <MdDeleteOutline
-                    style={{ color: "red", cursor: "pointer" }}
-                    onClick={() => handleDelete(quiz)}
-                  />
-                  <HiShare
-                    style={{ color: "green", cursor: "pointer" }}
-                    onClick={() => handleShare(quiz)}
-                  />
+                <div>
+                  <div className={styles.quizItemContent}>{index + 1}</div>
                 </div>
-                <span className={styles.link} onClick={() => handleQuiz(quiz)}>
+                <div>
+                  <div className={styles.quizItemContent}>{quiz.quizName}</div>
+                </div>
+                <div>
+                  <div className={styles.quizItemContent}>{formattedDate}</div>
+                </div>
+                <div>
+                  <div className={styles.quizItemContent}>{quiz.totalViews}</div>
+                </div>
+                <div>
+                  <div style={{ display: "flex", gap: "4px", marginRight:'20px' }}>
+                    <FaRegEdit
+                      style={{ color: "blue", cursor: "pointer" }}
+                      onClick={() => handleEditQuiz(quiz)}
+                    />
+                    <MdDeleteOutline
+                      style={{ color: "red", cursor: "pointer" }}
+                      onClick={() => handleDelete(quiz)}
+                    />
+                    <HiShare
+                      style={{ color: "green", cursor: "pointer" }}
+                      onClick={() => handleShare(quiz)}
+                    />
+                  </div>
+                </div>
+                <div className={styles.link} onClick={() => handleQuiz(quiz)}>
                   Question wise Analysis
-                </span>
+                </div>
               </div>
             );
           })}
