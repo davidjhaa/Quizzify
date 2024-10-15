@@ -1,6 +1,6 @@
 .main {
   width: 82vw;
-  height:100vh;
+  height: 100vh;
   padding: 20px;
   background: #EDEDED;
   margin: 0;
@@ -22,39 +22,56 @@
   z-index: 1000; 
 }
 
-  
 .analyticsContainer {
   background-color: #f2f2f2;
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 38px;
+  font-weight: 700;
   margin-bottom: 20px;
   text-align: center;
+  color: gray;
+  font-family: cursive;
 }
-  
+
 .quizItem {
-  border-radius: 4px;
+  /* border-radius: 8px;
   display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 14px 20px;
+  margin-bottom: 10px; */
+  display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 10px 31px;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
-.quizItem span {
-  margin-right: 10px;
+.quizItemContent {
+  flex: 1;
+  min-width: 100px; 
+  text-align: center;
+  margin: 5px;
 }
 
-.link{
+.link {
   cursor: pointer;
   color: blue;
-text-decoration: underline;
+  text-decoration: underline;
 }
 
+.quizItem div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
 .deleteConfirmation {
   position: fixed;
@@ -71,7 +88,7 @@ text-decoration: underline;
 
 .confirmationBox {
   width: 40vw;
-  height: 30vh;
+  height: 40vh;
   background: white;
   padding: 20px;
   border-radius: 8px;
@@ -82,10 +99,10 @@ text-decoration: underline;
   background-color: #007bff; 
   color: #fff; 
   border: none; 
-  padding: 10px 20px; 
+  padding: 14px 20px; 
   cursor: pointer; 
   margin-right: 10px; 
-  border-radius: 4px;
+  border-radius: 10px;
   margin-right: 40px;
 }
 
