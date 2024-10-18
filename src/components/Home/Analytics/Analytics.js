@@ -55,7 +55,7 @@ function Analytics() {
   const handleShare = (quiz) => {
     const link = `${window.location.origin}/quiz/${quiz._id}`;
     navigator.clipboard.writeText(link);
-    notify();
+    notify("quiz Link copied");
   };
 
   const handleDelete = (quiz) => {
