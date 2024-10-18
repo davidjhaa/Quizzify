@@ -39,38 +39,27 @@
 }
 
 .quizItem {
-  /* border-radius: 8px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 14px 20px;
-  margin-bottom: 10px; */
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 31px;
+  padding: 10px 30px;
   border-radius: 8px;
   margin-bottom: 8px;
 }
 
 .quizItemContent {
+  display: flex;
   flex: 1;
   min-width: 100px; 
   text-align: center;
-  margin: 5px;
+  padding: 2px;
 }
 
 .link {
   cursor: pointer;
   color: blue;
   text-decoration: underline;
-}
-
-.quizItem div {
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
 
 .deleteConfirmation {

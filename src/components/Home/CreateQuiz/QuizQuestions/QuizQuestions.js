@@ -30,9 +30,9 @@ const QuizQuestions = ({ quizName, quizType }) => {
   const storedQuestions = useSelector((state) => state.quiz.questions);
 
   const [question, setQuestion] = useState({
-    questionText: stateData?.questions[0]?.questionText || "",
-    options: stateData?.questions[0]?.options.map((opt) => opt.option) || ["", "",],
-    correctOption: stateData?.questions[0]?.correctOption || "",
+    questionText: "",
+    options: ["", "",],
+    correctOption: null,
   });
   const [optionType, setOptionTypeLocal] = useState(storedOptionType || "Text");
   const [questionsLength, setQuestionsLength] = useState(
@@ -365,7 +365,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
           <div className={styles.optionType}>
             <span>OptionType</span>
             <div className={styles.radioButtons}>
-              <div
+              <div 
+                style={{cursor:'pointer'}}
                 onClick={(e) => {
                   if (storedOptionType === "") {
                     handleOptionTypeSet("Text");
@@ -375,15 +376,17 @@ const QuizQuestions = ({ quizName, quizType }) => {
                 }}
               >
                 <input
+                style={{cursor:'pointer'}}
                   type="radio"
                   id="Text"
                   name="option"
                   checked={optionType === "Text"}
                   disabled={storedOptionType !== ""}
                 />
-                <label htmlFor="Text">Text</label>
+                <label htmlFor="Text" style={{cursor:'pointer'}}>Text</label>
               </div>
-              <div
+              <div 
+                style={{cursor:'pointer'}}
                 onClick={(e) => {
                   if (storedOptionType === "") {
                     handleOptionTypeSet("Image");
@@ -393,16 +396,17 @@ const QuizQuestions = ({ quizName, quizType }) => {
                 }}
               >
                 <input
+                style={{cursor:'pointer'}}
                   type="radio"
                   id="Image"
                   name="option"
                   checked={optionType === "Image"}
                   disabled={storedOptionType !== ""}
                 />
-                <label htmlFor="Image">Image</label>
+                <label htmlFor="Image" style={{cursor:'pointer'}}>Image</label>
               </div>
 
-              <div
+              <div style={{cursor:'pointer'}}
                 onClick={(e) => {
                   if (storedOptionType === "") {
                     handleOptionTypeSet("Text+Image");
@@ -412,13 +416,14 @@ const QuizQuestions = ({ quizName, quizType }) => {
                 }}
               >
                 <input
+                style={{cursor:'pointer'}}
                   type="radio"
                   id="Text+Image"
                   name="option"
                   checked={optionType === "Text+Image"}
                   disabled={storedOptionType !== ""}
                 />
-                <label htmlFor="Text+Image">Text & Image</label>
+                <label htmlFor="Text+Image" style={{cursor:'pointer'}}>Text & Image</label>
               </div>
             </div>
           </div>
@@ -428,6 +433,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                 <div key={index} className={styles.options}>
                   {quizType === "Q&A" && (
                     <input
+                      style={{cursor:'pointer'}}
                       type="radio"
                       name="correctOption"
                       checked={question.correctOption === option}
@@ -436,8 +442,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
                   )}
                   {optionType === "Text" && (
                     <input
-                      className={styles.option}
-                      type="text"
+                    className={`${styles.option} ${question.correctOption === option ? styles.correctOption : ''}`}
+                    type="text"
                       placeholder="Text"
                       name={`text_${index}`}
                       value={option}
@@ -446,8 +452,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
                   )}
                   {optionType === "Image" && (
                     <input
-                      className={styles.option}
-                      type="text"
+                    className={`${styles.option} ${question.correctOption === option ? styles.correctOption : ''}`}
+                    type="text"
                       placeholder="Image URL"
                       name={`image_${index}`}
                       value={option}
@@ -458,7 +464,7 @@ const QuizQuestions = ({ quizName, quizType }) => {
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <input
                         style={{ marginRight: "28px" }}
-                        className={styles.option}
+                        className={`${styles.option} ${question.correctOption === option ? styles.correctOption : ''}`}
                         type="text"
                         placeholder="Text"
                         name={`text_${index}`}
@@ -468,8 +474,8 @@ const QuizQuestions = ({ quizName, quizType }) => {
                         }
                       />
                       <input
-                        className={styles.option}
-                        type="text"
+                    className={`${styles.option} ${question.correctOption === option ? styles.correctOption : ''}`}
+                    type="text"
                         placeholder="Image URL"
                         name={`image_${index}`}
                         value={option.split("davidjhaa")[1] || ""}

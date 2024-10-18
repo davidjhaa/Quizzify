@@ -137,7 +137,7 @@ function Analytics() {
         </div>
       )}
       {showEdit && (
-        <EditQuiz quiz={currentQuiz} quizType={quiztype} setShowEdit={setShowEdit}/>
+        <EditQuiz quiz={currentQuiz} quizType={quiztype} setShowEdit={setShowEdit} />
       )}
       <div className={styles.analyticsContainer}>
         <div className={styles.title}>Analytics</div>
@@ -158,33 +158,27 @@ function Analytics() {
                 className={styles.quizItem}
                 style={{ backgroundColor }}
               >
-                <div>
-                  <div className={styles.quizItemContent}>{index + 1}</div>
-                </div>
-                <div>
-                  <div className={styles.quizItemContent}>{quiz.quizName}</div>
-                </div>
-                <div>
-                  <div className={styles.quizItemContent}>{formattedDate}</div>
-                </div>
-                <div>
-                  <div className={styles.quizItemContent}>{quiz.totalViews}</div>
-                </div>
-                <div>
-                  <div style={{ display: "flex", gap: "4px", marginRight:'20px' }}>
-                    <FaRegEdit
-                      style={{ color: "blue", cursor: "pointer" }}
-                      onClick={() => handleEditQuiz(quiz)}
-                    />
-                    <MdDeleteOutline
-                      style={{ color: "red", cursor: "pointer" }}
-                      onClick={() => handleDelete(quiz)}
-                    />
-                    <HiShare
-                      style={{ color: "green", cursor: "pointer" }}
-                      onClick={() => handleShare(quiz)}
-                    />
-                  </div>
+                <div className={styles.quizItemContent}>{index + 1}</div>
+                <div className={styles.quizItemContent}>{quiz.quizName}</div>
+                <div className={styles.quizItemContent}>{formattedDate}</div>
+                <div className={styles.quizItemContent} style={{display:'flex', justifyContent:'center'}}>{quiz.totalViews}</div>
+                <div className={styles.quizItemContent}
+                  style={{ display: "flex", justifyContent:'center', gap: "8px" }}>
+                  <FaRegEdit
+                    size={20}
+                    style={{ color: "blue", cursor: "pointer" }}
+                    onClick={() => handleEditQuiz(quiz)}
+                  />
+                  <MdDeleteOutline
+                    size={22}
+                    style={{ color: "red", cursor: "pointer" }}
+                    onClick={() => handleDelete(quiz)}
+                  />
+                  <HiShare
+                    size={20}
+                    style={{ color: "green", cursor: "pointer" }}
+                    onClick={() => handleShare(quiz)}
+                  />
                 </div>
                 <div className={styles.link} onClick={() => handleQuiz(quiz)}>
                   Question wise Analysis
