@@ -116,23 +116,25 @@ function Analytics() {
             <p style={{ marginBottom: "20px", fontSize: "32px" }}>
               Are you confirm, you want to delete ?
             </p>
-            <button
-              onClick={confirmDelete}
-              style={{ backgroundColor: "red", color: "white", width: '150px' }}
-            >
-              Confirm Delete
-            </button>
-            <button
-              onClick={cancelDelete}
-              style={{
-                width: '150px',
-                backgroundColor: "white",
-                color: "black",
-                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.4)",
-              }}
-            >
-              Cancel
-            </button>
+            <div style={{display:'flex', justifyContent:'space-around', gap:'2.4rem'}}>
+              <button
+                onClick={confirmDelete}
+                style={{ backgroundColor: "red", color: "white", width: '150px' }}
+              >
+                Confirm Delete
+              </button>
+              <button
+                onClick={cancelDelete}
+                style={{
+                  width: '150px',
+                  backgroundColor: "white",
+                  color: "black",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.4)",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -140,7 +142,16 @@ function Analytics() {
         <EditQuiz quiz={currentQuiz} quizType={quiztype} setShowEdit={setShowEdit} />
       )}
       <div className={styles.analyticsContainer}>
-        <div className={styles.title}>Analytics</div>
+        <div className={styles.title}>Quiz Analysis</div>
+
+        <div className={styles.quizItem} style={{backgroundColor:'#5076FF', color:'white', fontWeight:'800'}}>
+          <div className={styles.quizItemContent}>S.No</div>
+          <div className={styles.quizItemContent}>Quiz Name</div>
+          <div className={styles.quizItemContent} >Created on</div>
+          <div className={styles.quizItemContent} style={{display:'flex', justifyContent:'center'}}>Impression</div>
+          <div className={styles.quizItemContent}></div>
+          <div className={styles.quizItemContent}></div>
+        </div>
 
         {quizzes.length > 0 &&
           quizzes.map((quiz, index) => {
@@ -151,7 +162,7 @@ function Analytics() {
               day: "numeric",
             });
             const backgroundColor =
-              index % 2 === 0 ? "white" : "rgb(195, 198, 240)";
+              index % 2 === 0 ? "transparent" : "rgb(125 157 254)";
             return (
               <div
                 key={index}
@@ -193,7 +204,3 @@ function Analytics() {
 }
 
 export default Analytics;
-
-
-
-
