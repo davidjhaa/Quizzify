@@ -51,16 +51,22 @@ const QuizQuestions = ({ quiz, quizType, setShowEdit }) => {
   }, [quiz]);
 
   const populateQuestion = (index) => {
-    if (quiz.length > 0 && index < quiz.length) {
-      const clickedQuestion = question[index];
+    if (quiz.questions.length > 0 && index < quiz.questions.length) {
+      const clickedQuestion = quiz.questions[index];
       setQuestion({
         questionText: clickedQuestion.questionText,
         options: clickedQuestion.options.map((opt) => opt.option),
         correctOption: clickedQuestion.correctOption,
       });
-      if (storedOptionType) {
-        setStoredOptionType(storedOptionType);
-      }
+      setActiveIndex(index);
+    }
+    else{
+      setQuestion({
+        questionText: "",
+        options: ["", ""],
+        correctOption: null,
+      });
+      setActiveIndex(index)
     }
   };
 
@@ -261,26 +267,7 @@ const QuizQuestions = ({ quiz, quizType, setShowEdit }) => {
   };
 
   const handleQuestionClick = (index) => {
-    if (activeIndex < question.length) {
-      dispatch(updateQuestion({ question, index: activeIndex }));
-    }
-
-    if (index < question.length) {
-      setQuestion({
-        questionText: question[index].questionText,
-        options: question[index].options.map((opt) => opt.option),
-        correctOption: question[index].correctOption,
-      });
-    }
-
-    else if (index === question.length) {
-      setQuestion({
-        questionText: "",
-        options: ["", ""],
-        correctOption: "",
-      });
-    }
-    setActiveIndex(index);
+    populateQuestion(index);
   };
 
   const handleTimerClick = (value) => {
