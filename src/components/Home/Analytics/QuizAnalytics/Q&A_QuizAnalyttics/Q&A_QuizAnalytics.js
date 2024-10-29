@@ -38,16 +38,16 @@ function QA_QuizAnalytics({ quiz, onClose }) {
 
   return (
     <div className={styles.main}>
-      <div style={{display:'flex', justifyContent:'space-between'}}>
-        <h1>{quiz.quizName} Question Analysis</h1>
-        <ImCross style={{color:'red', cursor:'pointer'}} onClick={onClose}/>
+      <div className={styles.header}>
+        <h1>{quiz.quizName}.  Analysis</h1>
+        <ImCross className={styles.closeIcon} onClick={onClose} />
       </div>
       {quiz.questions.map((question, index) => (
         <div key={index} className={styles.question}>
-          <h2>
+          <h2 className={styles.questionTitle}>
             Q.{question.questionNumber} {question.questionText}
           </h2>
-          <div style={{ display: "flex" }}>
+          <div className={styles.resultsContainer}>
             <div className={styles.result}>
               {totalAttempted}
               <p>People Attempted Question</p>
@@ -64,6 +64,7 @@ function QA_QuizAnalytics({ quiz, onClose }) {
         </div>
       ))}
     </div>
+
   );
 }
 
